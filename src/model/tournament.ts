@@ -1,15 +1,15 @@
-export enum QualifiedNextRound{
-    WINS = 'WINS',
-    LOSSES = 'LOSSES',
-    DRAWS = 'DRAWS',
+export enum MatchResult{
+    WIN = 'WIN',
+    LOSS = 'LOSS',
+    DRAW = 'DRAW',
     NOT_PLAYED = 'NOT_PLAYED'
 }
 
 export enum TournamentStage {
     GROUP_STAGE = 'GROUP_STAGE',
-    ROUND_OF_32 = 'ROUND_OF_32', // Dezesseis avos
-    ROUND_OF_16 = 'ROUND_OF_16', // Oitavas
-    QUARTER_FINALS = 'QUARTER_FINALS', // Quartas
+    ROUND_OF_32 = 'ROUND_OF_32', 
+    ROUND_OF_16 = 'ROUND_OF_16', 
+    QUARTER_FINALS = 'QUARTER_FINALS',
     SEMI_FINALS = 'SEMI_FINALS',
     FINAL = 'FINAL'
 }
@@ -22,7 +22,7 @@ export interface Stats{
     goalsAgainst: number,
     goalDifference: number,
     points: number,
-    qualifiedNextRound?: QualifiedNextRound[]
+    recentForm?: MatchResult[]
 }
 
 export interface Team {
@@ -43,17 +43,22 @@ export interface Tournament {
     id: number,
     name: string,
     groups: Group[],
-    matches: Match[]
+    rounds: Round[]
 }
 
 export interface Match {
     id: number,
     stage: TournamentStage,
-    round?: number,
+    roundId?: number,
     groupId?: number,
     homeTeamId: number,
     awayTeamId: number,
     homeTeamGoals: number,
     awayTeamGoals: number,
     date: Date
+}
+
+export interface Round {
+  id: number,
+  matches: Match[]
 }

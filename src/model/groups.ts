@@ -79,7 +79,7 @@ export const Groups: Group[] = [
     createGroup(11, "Grupo K", [
         teamMap["portugal"],
         teamMap["congo"],
-        teamMap["usbequistão"],
+        teamMap["uzbequistão"],
         teamMap["colômbia"]
     ], []),
     createGroup(12, "Grupo L", [
