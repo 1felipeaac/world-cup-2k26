@@ -1,5 +1,5 @@
 import { getTeamLogo } from "../utils/logos";
-import type { Stats, Team } from "./tournament";
+import type { Stats, Team } from "../types/tournament";
 
 const initialStats: Stats = {wins: 0, losses: 0, draws: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0}
 

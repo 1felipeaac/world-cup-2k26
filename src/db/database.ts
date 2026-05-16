@@ -1,5 +1,6 @@
 import Dexie, { type Table } from "dexie";
-import type { Group, Match, Round, Team } from "../model/tournament";
+import type { Group, Match, Round, Team } from "../types/tournament";
+import type { SweepstakesBet, SweepstakesUser } from "../types/bet";
 
 
 export class CopaDatabase extends Dexie {
@@ -9,6 +10,9 @@ export class CopaDatabase extends Dexie {
   matches!: Table<Match, number>;
   rounds!: Table<Round, number>;
 
+  sweepstakesUsers!: Table<SweepstakesUser, number>;
+  sweepstakesBets!: Table<SweepstakesBet, number>;
+
   constructor() {
     super('CopaSimulatorDB');
 
@@ -17,6 +21,18 @@ export class CopaDatabase extends Dexie {
       groups: 'id, name',
       matches: 'id, stage, roundId, groupId, homeTeamId, awayTeamId',
       rounds: 'id'
+    });
+
+    this.version(2).stores({
+      teams: 'id, name',
+      groups: 'id, name',
+    
+      matches: 'id, stage, roundId, groupId, [groupId+roundId], homeTeamId, awayTeamId',
+      rounds: 'id',
+      
+      sweepstakesUsers: '++id, name, totalPoints',
+      
+      sweepstakesBets: '++id, userId, matchId, [userId+matchId]'
     });
   }
 }

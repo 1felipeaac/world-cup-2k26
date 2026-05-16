@@ -1,5 +1,5 @@
 import React from 'react';
-import { MatchResult } from '../model/tournament';
+import { MatchResult } from '../types/tournament';
 
 
 interface TeamFormProps {
@@ -37,7 +37,7 @@ export const TeamForm: React.FC<TeamFormProps> = ({ form }) => {
           <div
             key={index}
             title={result}
-            className={`flex items-center justify-center w-3 h-3 md:w-6 md:h-6 rounded-full text-[9px] md:text-[10px] font-bold shadow-sm transition-all ${style.bg} ${style.text}`}
+            className={`flex items-center justify-center w-3 h-3 md:w-4 md:h-4 rounded-full text-[9px] md:text-[10px] font-bold shadow-sm transition-all ${style.bg} ${style.text}`}
           >
             {style.label}
           </div>

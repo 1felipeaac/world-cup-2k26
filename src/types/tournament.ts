@@ -53,8 +53,8 @@ export interface Match {
     groupId?: number,
     homeTeamId: number,
     awayTeamId: number,
-    homeTeamGoals: number,
-    awayTeamGoals: number,
+    homeTeamGoals: number | null,
+    awayTeamGoals: number | null,
     date: Date
 }
 
