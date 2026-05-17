@@ -103,11 +103,9 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         <table className="w-full text-sm text-left text-slate-600">
           <thead className="text-[10px] text-slate-400 uppercase bg-slate-50/50">
             <tr>
-              <th className="px-4 py-2 font-medium md:max-w-5 w-8">Pos</th>
-              <th className="px-2 py-2 font-medium">Seleção</th>
+              <th className="px-4 py-2 font-medium md:max-w-4 w-8">Pos</th>
+              <th className="px-2 py-2 font-medium min-w-16">Seleção</th>
               <th className="px-2 py-2 font-medium text-center">P</th>
-              <th className="px-2 py-2 font-medium text-center">GP</th>
-              <th className="px-2 py-2 font-medium text-center">GC</th>
               <th className="px-2 py-2 font-medium text-center">SG</th>
               <th className="px-4 py-2 font-medium text-right">Resultados</th>
             </tr>
@@ -128,8 +126,10 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                   </span>
                 </td>
                 <td className="px-2 py-3 max-w-40">
-                  <div className="flex items-center gap-2cursor-pointer"
-          onClick={() => setShowTeamName(!showTeamName)}>
+                  <div
+                    className="flex items-center gap-2cursor-pointer min-w-16"
+                    onClick={() => setShowTeamName(!showTeamName)}
+                  >
                     <img
                       src={team.logoUrl}
                       alt={team.name}
@@ -152,12 +152,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                 </td>
                 <td className="px-2 py-3 text-center font-bold text-slate-900">
                   {team.stats.points}
-                </td>
-                <td className="px-2 py-3 text-center font-bold text-slate-900">
-                  {team.stats.goalsFor}
-                </td>
-                <td className="px-2 py-3 text-center font-bold text-slate-900">
-                  {team.stats.goalsAgainst}
                 </td>
                 <td className="px-2 py-3 text-center font-medium">
                   {team.stats.goalDifference}
