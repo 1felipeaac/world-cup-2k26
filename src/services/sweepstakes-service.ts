@@ -1,34 +1,6 @@
 import { db } from "../db/database";
-import type { SweepstakesBet, SweepstakesUser } from "../types/bet";
-import { TournamentStage, type Match } from "../types/tournament";
+import { TournamentStage } from "../types/tournament";
 
-const calculateBetPoints = (bet: SweepstakesBet, match: Match): number => {
-  // 1. Se o jogo oficial ainda não aconteceu (null), ninguém ganha pontos
-  if (match.homeTeamGoals === null || match.awayTeamGoals === null) return 0;
-
-  // 2. Se a aposta está vazia, 0 pontos
-  if (bet.homeTeamGoals === null || bet.awayTeamGoals === null) return 0;
-
-  // 3. Regra de 3 Pontos: Placar exato
-  const isExactMatch =
-    bet.homeTeamGoals === match.homeTeamGoals &&
-    bet.awayTeamGoals === match.awayTeamGoals;
-
-  if (isExactMatch) return 3;
-
-  // 4. Regra de 1 Ponto: Acertou o Vencedor ou o Empate
-  const betGoalDiff = bet.homeTeamGoals - bet.awayTeamGoals;
-  const matchGoalDiff = match.homeTeamGoals - match.awayTeamGoals;
-
-  // Math.sign retorna: 1 (Número positivo = Casa venceu), -1 (Negativo = Fora venceu), 0 (Empate)
-  // Se o "sinal" da aposta for igual ao "sinal" do jogo real, ele acertou a tendência!
-  if (Math.sign(betGoalDiff) === Math.sign(matchGoalDiff)) {
-    return 1;
-  }
-
-  // 5. Errou tudo
-  return 0;
-};
 
 export const SweepstakesService = {
   /**
@@ -136,7 +108,7 @@ export const SweepstakesService = {
 
             // Descobre quem ganhou na vida real e no palpite (HOME, AWAY, ou DRAW)
             const actualResult = actualHome > actualAway ? 'HOME' : actualHome < actualAway ? 'AWAY' : 'DRAW';
-            
+
             if(betHome === null || betAway === null) continue;
 
             const betResult = betHome > betAway ? 'HOME' : betHome < betAway ? 'AWAY' : 'DRAW';
