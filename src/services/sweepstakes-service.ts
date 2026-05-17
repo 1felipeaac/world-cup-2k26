@@ -1,6 +1,6 @@
 import { db } from "../db/database";
 import type { SweepstakesBet, SweepstakesUser } from "../types/bet";
-import type { Match } from "../types/tournament";
+import { TournamentStage, type Match } from "../types/tournament";
 
 const calculateBetPoints = (bet: SweepstakesBet, match: Match): number => {
   // 1. Se o jogo oficial ainda não aconteceu (null), ninguém ganha pontos
@@ -93,64 +93,77 @@ export const SweepstakesService = {
     return await db.sweepstakesBets.where("userId").equals(userId).toArray();
   },
 
-  recalculateAllBolaoScores: async () => {
-    // Trazemos tudo para a memória. Como o Dexie é local e rápido, isto leva milissegundos.
-    const allUsers = await db.sweepstakesUsers.toArray();
-    const allBets = await db.sweepstakesBets.toArray();
-    const allMatches = await db.matches.toArray();
+  recalculateAllSweeptakesScores: async () => {
+    // Transação envolvendo utilizadores, palpites e os jogos oficiais
+    await db.transaction('rw', [db.sweepstakesUsers, db.sweepstakesBets, db.matches], async () => {
+      const users = await db.sweepstakesUsers.toArray();
+      const allBets = await db.sweepstakesBets.toArray();
+      const allMatches = await db.matches.toArray();
 
-    // Criamos um mapa (Dicionário) de jogos para acesso ultra-rápido: O(1)
-    const matchesMap = new Map(allMatches.map((m) => [m.id, m]));
+      // Mapa para busca ultra-rápida O(1)
+      const matchMap = new Map(allMatches.map(m => [m.id, m]));
 
-    // Arrays para guardarmos o que precisa de ser atualizado na base de dados
-    const usersToUpdate: SweepstakesUser[] = [];
-    const betsToUpdate: SweepstakesBet[] = [];
+      // 🧠 O Sistema de Pesos Progressivos
+      const stageWeights = {
+        [TournamentStage.GROUP_STAGE]: 1,
+        [TournamentStage.ROUND_OF_32]: 2,
+        [TournamentStage.ROUND_OF_16]: 3,
+        [TournamentStage.QUARTER_FINALS]: 4,
+        [TournamentStage.SEMI_FINALS]: 5,
+        [TournamentStage.FINAL]: 10,
+      };
 
-    // Para cada utilizador, calculamos a sua vida
-    for (const user of allUsers) {
-      if (!user.id) continue;
+      // Recalcula o ranking de cada utilizador
+      for (const user of users) {
+        let totalPoints = 0;
+        
+        // Filtra apenas os palpites deste utilizador
+        const userBets = allBets.filter(b => b.userId === user.id);
 
-      let userTotalPoints = 0;
+        for (const bet of userBets) {
+          const match = matchMap.get(bet.matchId);
 
-      // Filtramos apenas as apostas deste utilizador
-      const userBets = allBets.filter((b) => b.userId === user.id);
+          // O palpite só gera pontos se o jogo real já tiver terminado (tiver placar)
+          if (match && match.homeTeamGoals !== null && match.awayTeamGoals !== null) {
+            
+            // Placar Real
+            const actualHome = match.homeTeamGoals;
+            const actualAway = match.awayTeamGoals;
+            
+            // Placar do Palpite
+            const betHome = bet.homeTeamGoals;
+            const betAway = bet.awayTeamGoals;
 
-      for (const bet of userBets) {
-        const officialMatch = matchesMap.get(bet.matchId);
+            // Descobre quem ganhou na vida real e no palpite (HOME, AWAY, ou DRAW)
+            const actualResult = actualHome > actualAway ? 'HOME' : actualHome < actualAway ? 'AWAY' : 'DRAW';
+            
+            if(betHome === null || betAway === null) continue;
 
-        if (officialMatch) {
-          const earnedPoints = calculateBetPoints(bet, officialMatch);
+            const betResult = betHome > betAway ? 'HOME' : betHome < betAway ? 'AWAY' : 'DRAW';
 
-          // Se os pontos da aposta mudaram, guardamos para atualizar no banco
-          if (bet.pointsEarned !== earnedPoints) {
-            bet.pointsEarned = earnedPoints;
-            betsToUpdate.push(bet);
+            // Regras de Pontuação Base
+            const isExactScore = (actualHome === betHome && actualAway === betAway);
+            const isCorrectOutcome = (actualResult === betResult);
+
+            // Pega o multiplicador da fase atual (Padrão: 1)
+            const multiplier = stageWeights[match.stage] || 1;
+
+            if (isExactScore) {
+              // Acertou na mosca: 3 pontos base * Multiplicador
+              totalPoints += (3 * multiplier);
+            } else if (isCorrectOutcome) {
+              // Acertou no vencedor/empate, mas errou os golos: 1 ponto base * Multiplicador
+              totalPoints += (1 * multiplier);
+            }
           }
-
-          userTotalPoints += earnedPoints;
         }
+
+        // Atualiza a pontuação total do utilizador no banco de dados
+        await db.sweepstakesUsers.update(user.id!, { totalPoints });
       }
+    });
 
-      // Se o total do utilizador mudou, guardamos para atualizar
-      if (user.totalPoints !== userTotalPoints) {
-        user.totalPoints = userTotalPoints;
-        usersToUpdate.push(user);
-      }
-    }
-
-    // Salva tudo no banco de dados usando o super poder do bulkPut (Lote)
-    await db.transaction(
-      "rw",
-      [db.sweepstakesUsers, db.sweepstakesBets],
-      async () => {
-        if (betsToUpdate.length > 0)
-          await db.sweepstakesBets.bulkPut(betsToUpdate);
-        if (usersToUpdate.length > 0)
-          await db.sweepstakesUsers.bulkPut(usersToUpdate);
-      },
-    );
-
-    console.log("🏆 Ranking do Bolão atualizado com sucesso!");
+    console.log("🎯 Ranking do Bolão atualizado com os novos pesos do Mata-mata!");
   },
 
   removeParticipant: async (userId: number) => {

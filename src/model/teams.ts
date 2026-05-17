@@ -3,10 +3,30 @@ import type { Stats, Team } from "../types/tournament";
 
 const initialStats: Stats = {wins: 0, losses: 0, draws: 0, goalsFor: 0, goalsAgainst: 0, goalDifference: 0, points: 0}
 
+const abbreviationsMap: Record<string, string> = {
+  "Argentina": "ARG", "Brasil": "BRA", "Colômbia": "COL",
+  "Equador": "ECU", "Paraguai": "PAR", "Uruguai": "URU",
+  "Canadá": "CAN", "Curaçao": "CUR", "Estados Unidos": "USA",
+  "Haiti": "HAI", "Mexico": "MEX", "Panamá": "PAN",
+  "Alemanha": "GER", "Austria": "AUT", "Belgica": "BEL",
+  "Bósnia e Herzegovina": "BIH", "Croácia": "CRO", "Escócia": "SCO",
+  "Espanha": "ESP", "França": "FRA", "Holanda": "NED",
+  "Inglaterra": "ENG", "Noruega": "NOR", "Portugal": "POR",
+  "República Tcheca": "CZE", "Suécia": "SWE", "Suíça": "SUI",
+  "Turquia": "TUR", "Arábia Saudita": "KSA", "Austrália": "AUS",
+  "Catar": "QAT", "Coréia do Sul": "KOR", "Iran": "IRN",
+  "Iraque": "IRQ", "Japão": "JPN", "Jordânia": "JOR",
+  "Uzbequistão": "UZB", "Nova Zelândia": "NZL", "África do Sul": "RSA",
+  "Argélia": "ALG", "Cabo Verde": "CPV", "Costa do Marfim": "CIV",
+  "Egito": "EGY", "Gana": "GHA", "Marrocos": "MAR",
+  "Congo": "COD", "Senegal": "SEN", "Tunísia": "TUN"
+};
+
 const createTeam = (id: number, name: string, logoKey: string): Team => ({
     id,
     name,
     logoUrl: getTeamLogo(logoKey),
+    abbreviation: abbreviationsMap[name] || name.substring(0, 3).toUpperCase(),
     stats: { ...initialStats }
 });
 

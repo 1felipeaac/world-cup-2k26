@@ -10,7 +10,7 @@ export const MainLayout: React.FC = () => {
 
       {/* Área do Conteúdo Dinâmico */}
       <main className="flex-1 h-screen overflow-y-auto">
-        <div className="p-8">
+        <div className="md:p-8 p-2">
           <Outlet />
         </div>
       </main>

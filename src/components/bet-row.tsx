@@ -81,7 +81,7 @@ export const BetRow: React.FC<BetRowProps> = ({ match, userId }) => {
 
   if (!homeTeam || !awayTeam) return null;
 
-  const matchDate = new Date(match.date);
+  const matchDate = new Date(match.date ?? 0);
   const formattedDate = matchDate.toLocaleDateString("pt-PT", {
     day: "2-digit",
     month: "2-digit",
@@ -121,7 +121,7 @@ export const BetRow: React.FC<BetRowProps> = ({ match, userId }) => {
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center pl-2">
         {/* Equipa Mandante */}
         <div className="flex items-center justify-end gap-3">
-          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-[120px]">
+          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-30">
             {homeTeam.name}
           </span>
           <img
@@ -173,7 +173,7 @@ export const BetRow: React.FC<BetRowProps> = ({ match, userId }) => {
             alt={awayTeam.name}
             className="w-6 h-6 object-contain"
           />
-          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-[120px]">
+          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-30">
             {awayTeam.name}
           </span>
         </div>

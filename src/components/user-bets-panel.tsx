@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import type { SweepstakesUser } from "../types/bet";
 import { db } from "../db/database";
 import { useLiveQuery } from "dexie-react-hooks";
-import { BetRow } from "./bet-row";
+import { TournamentStage, type Match } from "../types/tournament";
+import { MatchBetCard } from "./match-bet-card";
 
 interface UserBetsPanelProps {
   user: SweepstakesUser;
@@ -13,97 +14,127 @@ export const UserBetsPanel: React.FC<UserBetsPanelProps> = ({
   user,
   onClose,
 }) => {
-  // Estado para controlar qual aba (rodada) está ativa. Começamos na Rodada 1.
-  const [activeRound, setActiveRound] = useState(1);
+  // O estado inicial agora começa focado na primeira rodada dos grupos
+  const [activeTab, setActiveTab] = useState<string>("group_stage_r1");
 
-  // Busca todas as rodadas disponíveis no banco para desenhar as abas dinamicamente
-  const rounds = useLiveQuery(() => db.rounds.toArray()) || [];
+  // Busca todos os jogos do banco de dados
+  const allMatches = useLiveQuery(() => db.matches.toArray());
 
-  // Busca APENAS os jogos que pertencem à rodada ativa (Performance ++)
-  const roundMatches =
-    useLiveQuery(
-      () => db.matches.where("roundId").equals(activeRound).toArray(),
-      [activeRound],
-    ) || [];
+  if (!allMatches) {
+    return (
+      <div className="p-8 text-center text-slate-400">
+        A carregar palpites...
+      </div>
+    );
+  }
+
+  // 🧠 MAPEAMENTO GRANULAR: Separamos a Fase de Grupos por Rodadas (usando roundId)
+  const matchesByTab: Record<string, Match[]> = {
+    group_stage_r1: allMatches.filter(
+      (m) => m.stage === TournamentStage.GROUP_STAGE && m.roundId === 1,
+    ),
+    group_stage_r2: allMatches.filter(
+      (m) => m.stage === TournamentStage.GROUP_STAGE && m.roundId === 2,
+    ),
+    group_stage_r3: allMatches.filter(
+      (m) => m.stage === TournamentStage.GROUP_STAGE && m.roundId === 3,
+    ),
+    [TournamentStage.ROUND_OF_32]: allMatches.filter(
+      (m) => m.stage === TournamentStage.ROUND_OF_32,
+    ),
+    [TournamentStage.ROUND_OF_16]: allMatches.filter(
+      (m) => m.stage === TournamentStage.ROUND_OF_16,
+    ),
+    [TournamentStage.QUARTER_FINALS]: allMatches.filter(
+      (m) => m.stage === TournamentStage.QUARTER_FINALS,
+    ),
+    [TournamentStage.SEMI_FINALS]: allMatches.filter(
+      (m) => m.stage === TournamentStage.SEMI_FINALS,
+    ),
+    [TournamentStage.FINAL]: allMatches.filter(
+      (m) => m.stage === TournamentStage.FINAL,
+    ),
+  };
+
+  // Nomes amigáveis e organizados para a barra de navegação
+  const tabNames: Record<string, string> = {
+    group_stage_r1: "Grupos - 1ª Rodada",
+    group_stage_r2: "Grupos - 2ª Rodada",
+    group_stage_r3: "Grupos - 3ª Rodada",
+    [TournamentStage.ROUND_OF_32]: "16-Avos",
+    [TournamentStage.ROUND_OF_16]: "Oitavas",
+    [TournamentStage.QUARTER_FINALS]: "Quartos",
+    [TournamentStage.SEMI_FINALS]: "Semifinais",
+    [TournamentStage.FINAL]: "Final",
+  };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
-      {/* --- CABEÇALHO --- */}
-      <div className="bg-slate-900 px-5 py-4 flex items-center justify-between shadow-md z-20 relative">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-sm uppercase shadow-inner border-2 border-slate-800">
-            {user.name.substring(0, 2)}
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col">
+      {/* Cabeçalho do Participante */}
+      <div className="bg-slate-900 p-6 flex justify-between items-center text-white shrink-0">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center font-black text-xl">
+            {user.name.substring(0, 2).toUpperCase()}
           </div>
           <div>
-            <h3 className="font-bold text-white leading-tight">
-              Palpites de {user.name}
-            </h3>
-            <p className="text-xs text-indigo-300 font-medium">
-              Preencha os resultados por rodada
-            </p>
+            <h2 className="text-xl font-bold">{user.name}</h2>
+            <span className="text-blue-300 text-sm font-semibold">
+              {user.totalPoints} Pontos no Ranking
+            </span>
           </div>
         </div>
-
         <button
           onClick={onClose}
-          className="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 p-2 rounded-lg transition-colors"
-          title="Fechar Painel"
+          className="p-2 hover:bg-slate-800 rounded-full transition-colors"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          ✕
         </button>
       </div>
 
-      {/* --- BARRA DE NAVEGAÇÃO DE RODADAS (TABS) --- */}
-      <div className="bg-slate-800 border-b border-slate-700 overflow-x-auto custom-scrollbar z-10">
-        <div className="flex px-4 py-2 gap-2 min-w-max">
-          {rounds.map((round) => {
-            const isActive = activeRound === round.id;
-            return (
-              <button
-                key={round.id}
-                onClick={() => setActiveRound(round.id)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                  isActive
-                    ? "bg-indigo-500 text-white shadow-md"
-                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200"
+      {/* Barra de Abas Dinâmica (com Scroll Horizontal para Mobile) */}
+      <div className="flex overflow-x-auto bg-slate-50 border-b border-slate-200 p-2 gap-2 shrink-0 hide-scrollbar">
+        {Object.entries(matchesByTab).map(([tabId, matches]) => {
+          // Condição de ouro: Se for mata-mata e ainda não foi gerado, não mostra a aba.
+          // Se for fase de grupos, mostra sempre (mesmo vazia por algum motivo).
+          if (matches.length === 0 && !tabId.startsWith("group_stage"))
+            return null;
+
+          return (
+            <button
+              key={tabId}
+              onClick={() => setActiveTab(tabId)}
+              className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
+                activeTab === tabId
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-white text-slate-500 hover:bg-slate-100 hover:text-slate-800 border border-slate-200"
+              }`}
+            >
+              {tabNames[tabId]}
+              <span
+                className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+                  activeTab === tabId
+                    ? "bg-blue-800/50 text-white"
+                    : "bg-slate-100 text-slate-500"
                 }`}
               >
-                Rodada {round.id}
-              </button>
-            );
-          })}
-        </div>
+                {matches.length}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* --- ÁREA DE PALPITES (CONTEÚDO) --- */}
-      <div className="p-4 flex-1 overflow-y-auto bg-slate-50 relative">
-        {roundMatches.length === 0 ? (
-          <div className="text-center mt-10">
-            <p className="text-slate-400 font-medium">
-              Nenhum jogo encontrado para esta rodada.
-            </p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3 pb-8">
-            {roundMatches.map((match) => (
-              <BetRow
-                key={`${user.id}-${match.id}`}
-                match={match}
-                userId={user.id!}
-              />
-            ))}
+      {/* Grid de Palpites Filtrado (Scroll independente apenas aqui dentro) */}
+      <div className="p-6 overflow-y-auto flex-1 bg-slate-50">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {matchesByTab[activeTab]?.map((match) => (
+            <MatchBetCard key={match.id} match={match} userId={user.id!} />
+          ))}
+        </div>
+
+        {matchesByTab[activeTab]?.length === 0 && (
+          <div className="text-center text-slate-400 py-12 font-medium bg-white rounded-2xl border border-dashed border-slate-200">
+            Nenhum jogo disponível nesta fase de momento.
           </div>
         )}
       </div>

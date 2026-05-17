@@ -4,6 +4,7 @@ import { DatabaseProvider } from './contexts/db-context';
 import { Dashboard } from './pages/dashboard'
 import { MainLayout } from './layouts/main-layout';
 import { Sweepstakes } from './pages/sweepstakes';
+import { KnockoutStage } from './pages/knockout-stage';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/bolao" element={<Sweepstakes/>} />
+            <Route path="/mata-mata" element={<KnockoutStage />} />
           </Route>
         </Routes>
       </Router>

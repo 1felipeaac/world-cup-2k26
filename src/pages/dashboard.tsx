@@ -17,6 +17,7 @@ export function Dashboard() {
         <p className="text-slate-500 mt-2">
           Preencha os resultados reais para atualizar a classificação.
         </p>
+       
       </header>
 
       {/* Layout de 1 Card por linha, sem barra de rolagem! */}

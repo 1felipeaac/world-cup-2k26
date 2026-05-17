@@ -22,13 +22,14 @@ export const Sidebar: React.FC = () => {
 
   const navItems = [
     { name: 'Simulador Oficial', path: '/', icon: '🏆' },
+    { name: 'Fase Final (16-avos)', path: '/mata-mata', icon: '🔥' }, 
     { name: 'Modo Bolão', path: '/bolao', icon: '🎯' },
   ];
 
   return (
     <aside 
       className={`bg-slate-900 text-slate-300 flex flex-col shadow-xl z-20 min-h-screen transition-all duration-300 ease-in-out ${
-        isCollapsed ? 'w-20' : 'w-64'
+        isCollapsed ? 'w-15' : 'w-64'
       }`}
     >
       {/* Cabeçalho & Botão de Toggle */}
@@ -65,7 +66,7 @@ export const Sidebar: React.FC = () => {
       )}
 
       {/* Links de Navegação */}
-      <nav className="flex-1 px-4 space-y-2 mt-2">
+      <nav className="flex-1 md:px-4 px-2 space-y-2 mt-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

@@ -624,7 +624,7 @@ export const Round_Three: Round = {
     {
       id: 55,
       groupId: groupMap[normalize("Grupo D")]?.id,
-      homeTeamId: { ...teamMap[normalize("Tunísia")] }.id,
+      homeTeamId: { ...teamMap[normalize("Turquia")] }.id,
       awayTeamId: { ...teamMap[normalize("Estados Unidos")] }.id,
       homeTeamGoals: null,
       awayTeamGoals: null,

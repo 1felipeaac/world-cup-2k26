@@ -19,6 +19,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeRound, setActiveRound] = useState(1);
+  const [showTeamName, setShowTeamName] = useState(false);
 
   const matches =
     useLiveQuery(
@@ -54,7 +55,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
       <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
         <h3 className="font-bold text-slate-800">{groupName}</h3>
         <div className="flex items-center gap-4">
-          {/* Botão de Resetar o Grupo */}
           <button
             onClick={handleResetGroup}
             title="Limpar placares deste grupo"
@@ -76,7 +76,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
             <span className="hidden sm:inline">Limpar</span>
           </button>
 
-          {/* Botão de Expandir/Simular (que já tínhamos) */}
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-xs font-semibold uppercase tracking-wider text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1"
@@ -104,9 +103,11 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         <table className="w-full text-sm text-left text-slate-600">
           <thead className="text-[10px] text-slate-400 uppercase bg-slate-50/50">
             <tr>
-              <th className="px-4 py-2 font-medium">Pos</th>
+              <th className="px-4 py-2 font-medium md:max-w-5 w-8">Pos</th>
               <th className="px-2 py-2 font-medium">Seleção</th>
               <th className="px-2 py-2 font-medium text-center">P</th>
+              <th className="px-2 py-2 font-medium text-center">GP</th>
+              <th className="px-2 py-2 font-medium text-center">GC</th>
               <th className="px-2 py-2 font-medium text-center">SG</th>
               <th className="px-4 py-2 font-medium text-right">Resultados</th>
             </tr>
@@ -126,20 +127,37 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                     {index + 1}º
                   </span>
                 </td>
-                <td className="px-2 py-3">
-                  <div className="flex items-center gap-2">
+                <td className="px-2 py-3 max-w-40">
+                  <div className="flex items-center gap-2cursor-pointer"
+          onClick={() => setShowTeamName(!showTeamName)}>
                     <img
                       src={team.logoUrl}
-                      alt=""
-                      className="w-5 h-5 object-contain"
+                      alt={team.name}
+                      className="w-7 h-7 object-contain"
                     />
-                    <span className="font-semibold text-slate-800 truncate max-w-25">
+                    <span
+                      className="text-xs font-bold text-slate-700 truncate hidden sm:block"
+                      title={team.name}
+                    >
                       {team.name}
+                    </span>
+                    {/* Aparece só em telas pequenas (mobile) */}
+                    <span
+                      className="text-xs font-bold text-slate-700 block sm:hidden"
+                      title={team.name}
+                    >
+                      {showTeamName ? team.name : team.abbreviation}
                     </span>
                   </div>
                 </td>
                 <td className="px-2 py-3 text-center font-bold text-slate-900">
                   {team.stats.points}
+                </td>
+                <td className="px-2 py-3 text-center font-bold text-slate-900">
+                  {team.stats.goalsFor}
+                </td>
+                <td className="px-2 py-3 text-center font-bold text-slate-900">
+                  {team.stats.goalsAgainst}
                 </td>
                 <td className="px-2 py-3 text-center font-medium">
                   {team.stats.goalDifference}
@@ -153,7 +171,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         </table>
       </div>
 
-      {/* --- ACCORDION DE JOGOS (Oculto por defeito) --- */}
       <div
         className={`bg-slate-50 transition-all duration-500 ease-in-out overflow-hidden border-t border-slate-200 ${
           isExpanded
@@ -162,7 +179,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         }`}
       >
         <div className="p-4">
-          {/* Navegação de Rodadas (Carrossel simplificado) */}
           <div className="flex justify-center gap-2 mb-4">
             {[1, 2, 3].map((round) => (
               <button

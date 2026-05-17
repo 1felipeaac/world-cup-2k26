@@ -1,5 +1,11 @@
 import { db } from "../db/database";
-import { MatchResult, type Stats, type Team } from "../types/tournament";
+import {
+  MatchResult,
+  TournamentStage,
+  type Match,
+  type Stats,
+  type Team,
+} from "../types/tournament";
 import { MatchRepository } from "../repositories/match-repository";
 import { SweepstakesService } from "./sweepstakes-service";
 
@@ -33,7 +39,7 @@ export const SimulatorService = {
         await SimulatorService.recalculateTeamStats(match.awayTeamId);
 
         // 3. A MAGIA ACONTECE AQUI: Recalcula o Bolão imediatamente!
-        await SweepstakesService.recalculateAllBolaoScores();
+        await SweepstakesService.recalculateAllSweeptakesScores();
       },
     );
   },
@@ -85,11 +91,23 @@ export const SimulatorService = {
 
   resetTournament: async () => {
     await db.transaction("rw", [db.matches, db.teams], async () => {
-      await db.matches.toCollection().modify({
-        homeTeamGoals: null,
-        awayTeamGoals: null,
-      });
+      // 1. Zera os golos APENAS dos jogos da Fase de Grupos
+      await db.matches
+        .where("stage")
+        .equals(TournamentStage.GROUP_STAGE)
+        .modify({
+          homeTeamGoals: null,
+          awayTeamGoals: null,
+        });
 
+      // 2. EXTERMINA todos os jogos de Mata-mata (do 16-avos à Final)
+      // Eles serão recriados do zero quando o utilizador clicar em "Gerar Chaveamento" novamente
+      await db.matches
+        .where("stage")
+        .notEqual(TournamentStage.GROUP_STAGE)
+        .delete();
+
+      // 3. Zera as estatísticas de todas as seleções
       const initialStats = {
         wins: 0,
         losses: 0,
@@ -106,7 +124,9 @@ export const SimulatorService = {
       });
     });
 
-    console.log("Torneio resetado com sucesso!");
+    console.log(
+      "🔄 Torneio completamente resetado (Grupos zerados e Mata-mata apagado)!",
+    );
   },
 
   resetGroup: async (groupId: number) => {
@@ -202,5 +222,181 @@ export const SimulatorService = {
       bestThirds, // 8 equipas
       allClassified: [...directlyClassified, ...bestThirds], // As 32 equipas finais!
     };
+  },
+
+  generateKnockoutMatches: async () => {
+    // 1. Vai buscar as 32 equipas apuradas
+    const { directlyClassified, bestThirds } =
+      await SimulatorService.getClassifiedTeams();
+
+    // Como o directlyClassified tem o 1º e 2º de cada grupo intercalados, vamos separá-los
+    const firstPlaces = directlyClassified.filter(
+      (_, index) => index % 2 === 0,
+    );
+    const secondPlaces = directlyClassified.filter(
+      (_, index) => index % 2 !== 0,
+    );
+
+    // 2. Cria os Potes de Sorteio (Seeding)
+    // Ordenamos os segundos lugares pela sua força (pontos, saldo) para sabermos quem são os 4 melhores
+    secondPlaces.sort(
+      (a, b) =>
+        b.stats.points - a.stats.points ||
+        b.stats.goalDifference - a.stats.goalDifference,
+    );
+
+    // Pote 1: 12 Primeiros + 4 Melhores Segundos = 16 Equipas Fortes
+    const pot1 = [...firstPlaces, ...secondPlaces.slice(0, 4)];
+
+    // Pote 2: 8 Piores Segundos + 8 Melhores Terceiros = 16 Equipas Desafiantes
+    const pot2 = [...secondPlaces.slice(4, 12), ...bestThirds];
+
+    // Invertemos o Pote 2 para que o 1º Colocado Geral (pot1[0]) enfrente o "Pior" Terceiro (pot2[15])
+    pot2.reverse();
+
+    const newMatches: Match[] = [];
+
+    let matchIdCounter = 73;
+
+    // 3. Monta os 16 jogos
+    for (let i = 0; i < 16; i++) {
+      newMatches.push({
+        id: matchIdCounter++,
+        stage: TournamentStage.ROUND_OF_32, // Marcador crucial para sabermos que é mata-mata
+        homeTeamId: pot1[i].id,
+        awayTeamId: pot2[i].id,
+        homeTeamGoals: null,
+        awayTeamGoals: null,
+        date: null,
+        // (Opcional) Poderia adicionar uma data fictícia aqui
+      });
+    }
+
+    // 4. Salva no banco de dados de forma segura
+    await db.transaction("rw", db.matches, async () => {
+      // Limpa qualquer chaveamento de mata-mata anterior (útil se o utilizador quiser recalcular)
+      await db.matches
+        .where("stage")
+        .notEqual(TournamentStage.GROUP_STAGE)
+        .delete();
+
+      // Insere os 16 novos confrontos de uma vez
+      await db.matches.bulkAdd(newMatches);
+    });
+
+    console.log("🔥 Confrontos dos 16-avos gerados com sucesso!");
+  },
+
+  updateKnockoutMatchScore: async (
+    matchId: number,
+    homeGoals: number,
+    awayGoals: number,
+    homePenalties: number | null,
+    awayPenalties: number | null,
+  ) => {
+    // Colocamos tudo numa transação para garantir que a árvore não se quebra se houver um erro a meio
+    await db.transaction("rw", db.matches, async () => {
+      // 1. Grava o resultado do jogo atual
+      await db.matches.update(matchId, {
+        homeTeamGoals: homeGoals,
+        awayTeamGoals: awayGoals,
+        homeTeamPenalties: homePenalties,
+        awayTeamPenalties: awayPenalties,
+      });
+
+      const currentMatch = await db.matches.get(matchId);
+      if (!currentMatch) return;
+
+      // 2. Descobre quem ganhou o jogo (Tempo Regulamentar ou Penáltis)
+      let winnerId: number;
+      if (homeGoals > awayGoals) {
+        winnerId = currentMatch.homeTeamId;
+      } else if (awayGoals > homeGoals) {
+        winnerId = currentMatch.awayTeamId;
+      } else {
+        // Se for empate absoluto nos golos, o vencedor é decidido pelos penáltis
+        if (
+          homePenalties !== null &&
+          awayPenalties !== null &&
+          homePenalties > awayPenalties
+        ) {
+          winnerId = currentMatch.homeTeamId;
+        } else {
+          winnerId = currentMatch.awayTeamId;
+        }
+      }
+
+      // 3. Algoritmo de Avanço na Árvore (Onde o vencedor vai jogar a seguir?)
+      let nextMatchId = null;
+      let nextStage = null;
+      let isHomeInNextMatch = true;
+
+      if (matchId >= 73 && matchId <= 88) {
+        // Estamos nos 16-avos
+        const index = matchId - 73; // Índice de 0 a 15
+        nextMatchId = 89 + Math.floor(index / 2);
+        nextStage = TournamentStage.ROUND_OF_16;
+        isHomeInNextMatch = index % 2 === 0; // Pares vão para a Casa (Topo), Ímpares vão para Fora (Fundo)
+      } else if (matchId >= 89 && matchId <= 96) {
+        // Estamos nas Oitavas
+        const index = matchId - 89;
+        nextMatchId = 97 + Math.floor(index / 2);
+        nextStage = TournamentStage.QUARTER_FINALS;
+        isHomeInNextMatch = index % 2 === 0;
+      } else if (matchId >= 97 && matchId <= 100) {
+        // Estamos nos Quartos
+        const index = matchId - 97;
+        nextMatchId = 101 + Math.floor(index / 2);
+        nextStage = TournamentStage.SEMI_FINALS;
+        isHomeInNextMatch = index % 2 === 0;
+      } else if (matchId >= 101 && matchId <= 102) {
+        // Estamos nas Semis
+        const index = matchId - 101;
+        nextMatchId = 103;
+        nextStage = TournamentStage.FINAL;
+        isHomeInNextMatch = index % 2 === 0;
+      }
+
+      // Se for a Grande Final (103), não há próximo jogo a gerar
+      if (!nextMatchId || !nextStage) return;
+
+      // 4. Injeta o vencedor no próximo jogo
+      const nextMatch = await db.matches.get(nextMatchId);
+
+      if (nextMatch) {
+        // Se o jogo já existe (ex: o utilizador mudou de ideias num jogo anterior)
+        // Precisamos limpar o placar desse jogo futuro por segurança
+        const updateData: any = {
+          homeTeamGoals: null,
+          awayTeamGoals: null,
+          homeTeamPenalties: null,
+          awayTeamPenalties: null,
+        };
+
+        if (isHomeInNextMatch) {
+          updateData.homeTeamId = winnerId;
+        } else {
+          updateData.awayTeamId = winnerId;
+        }
+
+        await db.matches.update(nextMatchId, updateData);
+      } else {
+        // Se o jogo ainda não existe (primeiro cruzamento), criamos o registo dinamicamente.
+        // O ID 0 serve como "A definir" pois o Dexie só tem IDs reais a partir do 1.
+        await db.matches.put({
+          id: nextMatchId,
+          stage: nextStage,
+          homeTeamId: isHomeInNextMatch ? winnerId : 0,
+          awayTeamId: !isHomeInNextMatch ? winnerId : 0,
+          homeTeamGoals: null,
+          awayTeamGoals: null,
+          homeTeamPenalties: null,
+          awayTeamPenalties: null,
+          date: null,
+        });
+      }
+    });
+
+    console.log(`🚀 Vencedor avançado para o jogo ${matchId}!`);
   },
 };
