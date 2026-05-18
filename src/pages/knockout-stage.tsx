@@ -4,6 +4,7 @@ import { KnockoutBracket } from "../components/knockout-bracet";
 import { useState } from "react";
 import { db } from "../db/database";
 import { TournamentStage } from "../types/tournament";
+import { ChampionCelebration } from "../components/champion-celebration";
 
 export function KnockoutStage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -199,6 +200,8 @@ export function KnockoutStage() {
       </section>
 
       <KnockoutBracket matches={allMatches || []} />
+
+      <ChampionCelebration />
     </div>
   );
 }
