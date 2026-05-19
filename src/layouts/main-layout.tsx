@@ -16,7 +16,7 @@ export const MainLayout: React.FC = () => {
 
       {/* Área do Conteúdo Dinâmico */}
       <main className={`
-        pb-20 md:pb-0 transition-all duration-300
+        pb-20 md:pb-0 transition-all duration-300 ease-in-out flex-1 bg-slate-100
         ${isCollapsed ? 'md:pl-20' : 'md:pl-64'}
       `}>
         <div className="md:p-8 p-2">

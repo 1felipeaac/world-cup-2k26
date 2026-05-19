@@ -54,7 +54,7 @@ export function Sweepstakes() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-3xl mx-auto">
       {" "}
       {/* Aumentei a largura máxima para dar espaço ao Master-Detail */}
       <header className="mb-8">

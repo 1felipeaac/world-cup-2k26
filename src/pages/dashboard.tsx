@@ -11,6 +11,7 @@ export function Dashboard() {
   return (
     <div className="max-w-3xl mx-auto">
       <header className="mb-8">
+
         <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">
           Simulador <span className="text-blue-600">Fase de Grupos</span>
         </h1>

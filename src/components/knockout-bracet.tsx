@@ -29,7 +29,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
   return (
     <>
       {/* WRAPPER COM SCROLL: Adicionamos custom-scrollbar se você quiser estilizar no CSS depois */}
-      <div className="mt-12 bg-slate-800 rounded-3xl p-8 overflow-x-auto shadow-inner relative custom-scrollbar">
+      <div className="w-75 md:w-full mt-12 bg-slate-800 rounded-3xl p-8 overflow-x-auto shadow-inner relative custom-scrollbar">
         
         <h2 className="text-xl font-black text-white mb-8 flex items-center gap-3 sticky left-0 w-max">
           <span className="text-2xl">🏆</span>

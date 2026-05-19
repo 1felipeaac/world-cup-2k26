@@ -72,7 +72,7 @@ export function KnockoutStage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="md:max-w-3xl mx-auto">
       <header className="mb-8 border-b border-slate-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">
@@ -135,15 +135,6 @@ export function KnockoutStage() {
         variant="third"
         gridCols="grid-cols-2 md:grid-cols-4 lg:grid-cols-8"
       />
-
-      {/* SEÇÃO 3: Eliminados (Se você tiver essa lista também) */}
-      {/* <QualificationSection
-        title="Equipes Eliminadas"
-        teams={eliminatedTeams}
-        maxTeams={16}
-        variant="third" // Ou crie uma variante 'danger' no componente depois!
-      /> 
-      */}
 
       <KnockoutBracket matches={allMatches || []} />
 

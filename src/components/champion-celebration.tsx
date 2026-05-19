@@ -98,7 +98,7 @@ export const ChampionCelebration: React.FC = () => {
           Campeão do Mundo
         </h2>
 
-        <div className="relative flex flex-col items-center bg-gradient-to-b from-white to-slate-100 p-12 rounded-full border-8 border-amber-400 shadow-[0_0_100px_rgba(234,179,8,0.5)]">
+        <div className="relative flex flex-col items-center bg-linear-to-b from-white to-slate-100 p-12 rounded-full border-8 border-amber-400 shadow-[0_0_100px_rgba(234,179,8,0.5)]">
           <img 
             src={highResLogoUrl} 
             alt={champ.name} 

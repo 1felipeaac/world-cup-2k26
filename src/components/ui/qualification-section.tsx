@@ -22,29 +22,33 @@ const QualifiedTeamCard: React.FC<QualifiedTeamCardProps> = ({ team, index, vari
   const statsClass = isDirect ? "text-slate-400" : "text-amber-600/70";
 
   return (
-    <div className={`border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm transition-all relative overflow-hidden ${containerClass}`}>
-      {/* Barra colorida no topo */}
-      <div className={`absolute top-0 w-full h-1 ${topBarClass}`}></div>
-      
-      {/* Número da Posição */}
-      <span className={`absolute top-2 left-2 text-[10px] font-black ${indexClass}`}>
-        {index + 1}
-      </span>
+  <div className={`border rounded-xl p-3 flex flex-col items-center justify-start shadow-sm transition-all relative overflow-hidden min-h-35 ${containerClass}`}>
+    
+    {/* Barra do topo */}
+    <div className={`absolute top-0 w-full h-1 ${topBarClass}`}></div>
+    
+    {/* Posição */}
+    <span className={`absolute top-2 left-2 text-[10px] font-black ${indexClass}`}>
+      {index + 1}
+    </span>
 
-      {/* Reaproveitando nosso TeamDisplay para ter o clique no mobile! */}
+    {/* O nosso TeamDisplay blindado */}
+    <div className="w-full mt-4">
       <TeamDisplay 
         team={team} 
         isVertical={true}
-        imageClassName={isDirect ? "w-12 h-12" : "w-10 h-10"}
-        textClassName={`font-bold text-slate-700 text-center whitespace-normal break-words ${isDirect ? 'text-sm' : 'text-xs'}`}
+        imageClassName={isDirect ? "w-10 h-10" : "w-8 h-8"}
+        // Garantimos que o texto não force a quebra de linha agressiva
+        textClassName={`font-bold text-slate-700 text-center whitespace-normal break-words ${isDirect ? 'text-xs' : 'text-[10px]'}`}
       />
-
-      {/* Estatísticas */}
-      <span className={`text-[10px] font-medium mt-1 ${statsClass}`}>
-        {team.stats.points} PTS {isDirect && `• SG: ${team.stats.goalDifference}`}
-      </span>
     </div>
-  );
+
+    {/* Pontos - Centralizado na base */}
+    <span className={`text-[10px] font-medium mt-auto mb-2 ${statsClass}`}>
+      {team.stats.points} PTS {isDirect && `• SG: ${team.stats.goalDifference}`}
+    </span>
+  </div>
+);
 };
 
 
@@ -62,7 +66,7 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
   teams,
   maxTeams,
   variant = 'direct',
-  gridCols = "grid-cols-2 md:grid-cols-4 lg:grid-cols-6"
+  //gridCols = "grid-cols-2 md:grid-cols-4 lg:grid-cols-6"
 }) => {
   const isDirect = variant === 'direct';
   
@@ -70,7 +74,7 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
   const pillClass = isDirect ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700";
 
   return (
-    <section className="mb-10">
+    <section className="mb-10 w-75 md:w-full">
       {/* Cabeçalho da Seção */}
       <div className="flex items-center gap-3 mb-6">
         <div className={`h-8 w-2 rounded-full ${barClass}`}></div>
@@ -81,14 +85,14 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
       </div>
 
       {/* Grid de Times */}
-      <div className={`grid gap-4 ${gridCols}`}>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {teams.map((team, index) => (
-          <QualifiedTeamCard 
+            <QualifiedTeamCard 
             key={team.id} 
             team={team} 
             index={index} 
             variant={variant} 
-          />
+            />
         ))}
       </div>
     </section>
