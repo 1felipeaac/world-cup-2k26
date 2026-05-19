@@ -63,7 +63,7 @@ export const ChampionCelebration: React.FC = () => {
   const imageName = champ.logoUrl.split('/').pop();
   
   // Montamos o novo caminho apontando para a sua pasta de imagens 256x256
-  const highResLogoUrl = `/dist/plus-size/${imageName}`;
+  const highResLogoUrl = `/plus-size/${imageName}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-900/90 backdrop-blur-md animate-in fade-in duration-1000">
