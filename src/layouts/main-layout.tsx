@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../components/sidebar";
 
 export const MainLayout: React.FC = () => {
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-slate-100">
       {/* Injeção da nossa Sidebar isolada */}
-      <Sidebar />
+      <Sidebar 
+        isCollapsed={isCollapsed}
+        onToggle={() => setIsCollapsed(!isCollapsed)}
+      />
 
       {/* Área do Conteúdo Dinâmico */}
-      <main className="flex-1 h-screen overflow-y-auto">
+      <main className={`
+        pb-20 md:pb-0 transition-all duration-300
+        ${isCollapsed ? 'md:pl-20' : 'md:pl-64'}
+      `}>
         <div className="md:p-8 p-2">
           <Outlet />
         </div>
