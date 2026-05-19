@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/database";
@@ -114,6 +115,7 @@ export const MatchBetCard: React.FC<MatchBetCardProps> = ({
                 isVertical={true} 
                 imageClassName="w-10 h-10 drop-shadow-sm" 
                 className="flex-1 w-1/3"
+                showOnlyAbbreviation={true}
               />
 
             </>
@@ -124,21 +126,12 @@ export const MatchBetCard: React.FC<MatchBetCardProps> = ({
 
         {/* Área de Inputs do Palpite */}
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center gap-2">
-            <ScoreInput 
-              value={homeBet} 
-              onChange={(e) => setHomeBet(e.target.value)} 
-              disabled={!canBet} 
-            />
-            <span className="text-slate-300 font-bold text-sm">X</span>
-            <ScoreInput 
-              value={awayBet} 
-              onChange={(e) => setAwayBet(e.target.value)} 
-              disabled={!canBet} 
-            />
-
-          </div>
-        </div>
+    <div className="flex items-center gap-2">
+      <ScoreInput value={homeBet} onChange={(e) => setHomeBet(e.target.value)} disabled={!canBet} />
+      <span className="text-slate-300 font-bold text-sm">X</span>
+      <ScoreInput value={awayBet} onChange={(e) => setAwayBet(e.target.value)} disabled={!canBet} />
+    </div>
+  </div>
 
         {/* Equipe Fora */}
         <div className="flex flex-col items-center flex-1 w-1/3cursor-pointer"
@@ -150,6 +143,7 @@ export const MatchBetCard: React.FC<MatchBetCardProps> = ({
                 isVertical={true} 
                 imageClassName="w-10 h-10 drop-shadow-sm" 
                 className="flex-1 w-1/3"
+                showOnlyAbbreviation={true}
               />
             </>
           ) : (

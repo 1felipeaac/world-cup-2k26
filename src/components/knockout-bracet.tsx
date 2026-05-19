@@ -28,18 +28,22 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
 
   return (
     <>
-      <div className="mt-12 bg-slate-800 rounded-3xl p-8 overflow-x-auto shadow-inner relative">
-        <h2 className="text-xl font-black text-white mb-8 flex items-center gap-3 sticky left-0">
+      {/* WRAPPER COM SCROLL: Adicionamos custom-scrollbar se você quiser estilizar no CSS depois */}
+      <div className="mt-12 bg-slate-800 rounded-3xl p-8 overflow-x-auto shadow-inner relative custom-scrollbar">
+        
+        <h2 className="text-xl font-black text-white mb-8 flex items-center gap-3 sticky left-0 w-max">
           <span className="text-2xl">🏆</span>
           <span className="bg-linear-to-r from-white to-slate-400 bg-clip-text text-transparent italic tracking-tighter">
             CHAVEAMENTO OFICIAL
           </span>
         </h2>
 
-        {/* Container principal */}
-        <div className="flex gap-10 min-w-max pb-8 items-start">
+        {/* Container principal: min-w-max garante que ele expanda o quanto for preciso */}
+        <div className="flex gap-8 md:gap-10 min-w-max pb-8 items-start">
+          
           {/* Coluna 1: 16-Avos de Final (16 Jogos) */}
-          <div className="flex flex-col gap-4">
+          {/* 🚀 SOLUÇÃO: w-60 shrink-0 trava a largura da coluna! */}
+          <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               16-Avos
             </h3>
@@ -54,7 +58,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
 
           {/* Coluna 2: Oitavas de Final (8 Jogos) */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Oitavas
             </h3>
@@ -69,7 +73,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
 
           {/* Coluna 3: Quartos de Final (4 Jogos) */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Quartos
             </h3>
@@ -84,7 +88,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
 
           {/* Coluna 4: Semifinais (2 Jogos) */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Semifinais
             </h3>
@@ -99,7 +103,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
 
           {/* Coluna 5: Grande Final (1 Jogo) */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-black text-amber-400 uppercase tracking-widest mb-2">
               Grande Final
             </h3>
@@ -110,8 +114,10 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
               onClick={setSelectedMatchId}
             />
           </div>
+
         </div>
       </div>
+
       {selectedMatchId && (
         <MatchResultModal
           matchId={selectedMatchId}

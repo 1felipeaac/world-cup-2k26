@@ -5,6 +5,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { MatchRow } from "./match-row";
 import { MatchRepository } from "../repositories/match-repository";
 import { SimulatorService } from "../services/simulator-service";
+import { TeamDisplay } from "./ui/team-display";
 
 interface GroupTableProps {
   groupId: number;
@@ -19,7 +20,6 @@ export const GroupTable: React.FC<GroupTableProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeRound, setActiveRound] = useState(1);
-  const [showTeamName, setShowTeamName] = useState(false);
 
   const matches =
     useLiveQuery(
@@ -116,6 +116,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                 key={team.id}
                 className="hover:bg-blue-50/30 transition-colors"
               >
+                {/* POSIÇÃO */}
                 <td className="px-4 py-3 font-bold">
                   <span
                     className={
@@ -125,37 +126,25 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                     {index + 1}º
                   </span>
                 </td>
+
                 <td className="px-2 py-3 max-w-40">
-                  <div
-                    className="flex items-center gap-2cursor-pointer min-w-16"
-                    onClick={() => setShowTeamName(!showTeamName)}
-                  >
-                    <img
-                      src={team.logoUrl}
-                      alt={team.name}
-                      className="w-7 h-7 object-contain"
-                    />
-                    <span
-                      className="text-xs font-bold text-slate-700 truncate hidden sm:block"
-                      title={team.name}
-                    >
-                      {team.name}
-                    </span>
-                    {/* Aparece só em telas pequenas (mobile) */}
-                    <span
-                      className="text-xs font-bold text-slate-700 block sm:hidden"
-                      title={team.name}
-                    >
-                      {showTeamName ? team.name : team.abbreviation}
-                    </span>
-                  </div>
+                  <TeamDisplay 
+                    team={team}
+                    imageClassName="w-7 h-7"
+                    className="justify-start" 
+                  />
                 </td>
+
                 <td className="px-2 py-3 text-center font-bold text-slate-900">
                   {team.stats.points}
                 </td>
+
+                {/* SALDO DE GOLS */}
                 <td className="px-2 py-3 text-center font-medium">
                   {team.stats.goalDifference}
                 </td>
+
+                {/* FORM (RESULTADOS) */}
                 <td className="px-4 py-3">
                   <TeamForm form={team.stats.recentForm || []} />
                 </td>

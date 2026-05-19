@@ -5,6 +5,7 @@ import { useState } from "react";
 import { db } from "../db/database";
 import { TournamentStage } from "../types/tournament";
 import { ChampionCelebration } from "../components/champion-celebration";
+import { QualificationSection } from "../components/ui/qualification-section";
 
 export function KnockoutStage() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -117,87 +118,32 @@ export function KnockoutStage() {
         </div>
       ) : null}
 
-      {/* SEÇÃO 1: Classificados Diretos (1º e 2º de cada grupo) */}
-      <section className="mb-10">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-8 w-2 bg-blue-500 rounded-full"></div>
-          <h2 className="text-xl font-bold text-slate-800">
-            Classificação Direta (1º e 2º lugares)
-          </h2>
-          <span className="text-xs font-bold bg-blue-100 text-blue-700 px-3 py-1 rounded-full ml-auto">
-            {directlyClassified.length}/24 Equipes
-          </span>
-        </div>
+      {/* SEÇÃO 1: Classificados Diretos */}
+      <QualificationSection
+        title="Classificação Direta (1º e 2º lugares)"
+        teams={directlyClassified}
+        maxTeams={24}
+        variant="direct"
+        gridCols="grid-cols-2 md:grid-cols-4 lg:grid-cols-6"
+      />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {directlyClassified.map((team, index) => (
-            <div
-              key={team.id}
-              className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
-            >
-              <div className="absolute top-0 w-full h-1 bg-blue-500"></div>
-              <span className="absolute top-2 left-2 text-[10px] font-black text-slate-300">
-                {index + 1}
-              </span>
-              <img
-                src={team.logoUrl}
-                alt={team.name}
-                className="w-12 h-12 object-contain mb-3 drop-shadow-sm"
-              />
-              <span
-                className="font-bold text-slate-700 text-sm text-center line-clamp-1"
-                title={team.name}
-              >
-                {team.name}
-              </span>
-              <span className="text-[10px] text-slate-400 font-medium mt-1">
-                {team.stats.points} PTS • SG: {team.stats.goalDifference}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* SEÇÃO 2: Repescagem */}
+      <QualificationSection
+        title="Melhores Terceiros Colocados"
+        teams={bestThirds}
+        maxTeams={8}
+        variant="third"
+        gridCols="grid-cols-2 md:grid-cols-4 lg:grid-cols-8"
+      />
 
-      {/* SEÇÃO 2: A Repescagem (Os 8 melhores 3º colocados) */}
-      <section>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-8 w-2 bg-amber-500 rounded-full"></div>
-          <h2 className="text-xl font-bold text-slate-800">
-            Melhores Terceiros Colocados
-          </h2>
-          <span className="text-xs font-bold bg-amber-100 text-amber-700 px-3 py-1 rounded-full ml-auto">
-            {bestThirds.length}/8 Equipes
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-          {bestThirds.map((team, index) => (
-            <div
-              key={team.id}
-              className="bg-linear-to-b from-white to-amber-50/30 border border-amber-200 rounded-xl p-4 flex flex-col items-center justify-center shadow-sm hover:border-amber-400 transition-colors relative overflow-hidden"
-            >
-              <div className="absolute top-0 w-full h-1 bg-amber-500"></div>
-              <span className="absolute top-2 left-2 text-[10px] font-black text-amber-300">
-                {index + 1}
-              </span>
-              <img
-                src={team.logoUrl}
-                alt={team.name}
-                className="w-10 h-10 object-contain mb-3 drop-shadow-sm"
-              />
-              <span
-                className="font-bold text-slate-700 text-xs text-center line-clamp-1"
-                title={team.name}
-              >
-                {team.name}
-              </span>
-              <span className="text-[10px] text-amber-600/70 font-bold mt-1">
-                {team.stats.points} PTS
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* SEÇÃO 3: Eliminados (Se você tiver essa lista também) */}
+      {/* <QualificationSection
+        title="Equipes Eliminadas"
+        teams={eliminatedTeams}
+        maxTeams={16}
+        variant="third" // Ou crie uma variante 'danger' no componente depois!
+      /> 
+      */}
 
       <KnockoutBracket matches={allMatches || []} />
 

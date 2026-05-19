@@ -3,6 +3,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/database";
 import type { Match } from "../types/tournament";
 import { SimulatorService } from "../services/simulator-service";
+import { TeamDisplay } from "./ui/team-display";
+import { ScoreInput } from "./ui/score-input";
 
 interface MatchRowProps {
   match: Match;
@@ -87,52 +89,40 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
 
       {/* Grid do Placar */}
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
-        {/* Equipe Mandante (Esquerda) */}
-        <div className="flex items-center justify-end gap-3">
-          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-30">
-            {homeTeam.name}
-          </span>
-          <img
-            src={homeTeam.logoUrl}
-            alt={homeTeam.name}
-            className="w-8 h-8 object-contain"
+
+        <div className="flex justify-end">
+          <TeamDisplay 
+            team={homeTeam} 
+            isVertical={false} 
+            imageClassName="w-8 h-8" 
+            textClassName="font-semibold text-slate-700 text-sm whitespace-normal break-words"
+            className="flex-row-reverse text-right" 
           />
         </div>
 
-        {/* Inputs de Gol (Centro) */}
         <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min="0"
-            max="99"
+          <ScoreInput
             ref={homeInputRef}
-            defaultValue={match.homeTeamGoals ?? ""} // Usa defaultValue em vez de value (Uncontrolled Component)
+            defaultValue={match.homeTeamGoals ?? ""}
             onBlur={handleScoreUpdate}
-            className="w-10 h-10 text-center font-black text-slate-800 text-lg bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
           <span className="text-slate-300 font-bold text-sm">X</span>
-          <input
-            type="number"
-            min="0"
-            max="99"
+          <ScoreInput
             ref={awayInputRef}
             defaultValue={match.awayTeamGoals ?? ""}
             onBlur={handleScoreUpdate}
-            className="w-10 h-10 text-center font-black text-slate-800 text-lg bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
           />
         </div>
 
-        {/* Equipe Visitante (Direita) */}
-        <div className="flex items-center justify-start gap-3">
-          <img
-            src={awayTeam.logoUrl}
-            alt={awayTeam.name}
-            className="w-8 h-8 object-contain"
+        <div className="flex justify-start">
+          <TeamDisplay 
+            team={awayTeam} 
+            isVertical={false} 
+            imageClassName="w-8 h-8"
+            textClassName="font-semibold text-slate-700 text-sm whitespace-normal break-words"
           />
-          <span className="font-semibold text-slate-700 text-sm hidden sm:block truncate max-w-30">
-            {awayTeam.name}
-          </span>
         </div>
+        
       </div>
     </div>
   );
