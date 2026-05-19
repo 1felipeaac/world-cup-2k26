@@ -72,7 +72,7 @@ export function KnockoutStage() {
   };
 
   return (
-    <div className="md:max-w-3xl mx-auto">
+    <div className="md:max-w-3xl mx-auto flex flex-col items-center">
       <header className="mb-8 border-b border-slate-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">
