@@ -78,17 +78,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       </nav>
 
       {/* Botão Reset */}
-      <div className="hidden md:block p-4 border-t border-slate-800">
-        <button
-          onClick={handleResetTournament}
-          className={`flex items-center justify-center gap-2 py-3 text-rose-400 hover:bg-rose-500 hover:text-white rounded-xl transition-all w-full ${isCollapsed ? 'px-0' : 'px-4'}`}
-        >
-          <RotateCcw size={20} className="shrink-0" />
-          <span className={`hidden md:block transition-all ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
-            Zerar
-          </span>
-        </button>
-      </div>
+      <button
+        onClick={handleResetTournament}
+        className="
+          flex md:hidden items-center justify-center
+          h-12 w-12 rounded-xl
+          text-rose-400 hover:bg-rose-500 hover:text-white
+          transition-all
+        "
+      >
+        <RotateCcw size={20} />
+      </button>
     </aside>
   );
 };
