@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/database';
 import { TournamentStage, type Team } from '../types/tournament';
+import {Trophy, Astroid, Star, PartyPopper} from 'lucide-react'
 
 export const ChampionCelebration: React.FC = () => {
   // Estado apenas para registrar qual campeão o usuário já "fechou" a tela, 
@@ -24,12 +25,18 @@ export const ChampionCelebration: React.FC = () => {
     [finalMatch?.awayTeamId]
   );
 
+  const sizeImg = 60
   const confettiArray = useMemo(() => {
-    const emojis = ['✨', '🎉', '🎊', '🏆', '⭐'];
+    const emojis = [
+      <Astroid size={sizeImg} color="#ffeb0a"/>, 
+      <Trophy size={sizeImg} color="#ffeb0a"/>, 
+      <Star size={sizeImg} color="#ffeb0a"/>, 
+      <PartyPopper size={sizeImg} color="#ffeb0a"/>
+    ];
     const generateConfetti = () => Array.from({ length: 20 }).map((_, i) => ({
       id: i,
-      delay: Math.random() * 2,
-      duration: 2 + Math.random() * 3,
+      delay: Math.random() * 8,
+      duration: 2 + Math.random() * 8,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
     }));
     return generateConfetti();
@@ -77,7 +84,7 @@ export const ChampionCelebration: React.FC = () => {
       </div>
 
       {/* Partículas caindo simulando Confetes */}
-      <div className="absolute inset-0 pointer-events-none flex justify-around overflow-hidden">
+      <div className="pt-40 absolute inset-0 pointer-events-none flex justify-around overflow-hidden">
         {confettiArray.map((confetti) => (
           <div 
             key={confetti.id} 
