@@ -7,6 +7,7 @@ export const ChampionCelebration: React.FC = () => {
   // Estado apenas para registrar qual campeão o usuário já "fechou" a tela, 
   // para não ficar abrindo toda hora que ele navegar pelo app.
   const [closedForChampId, setClosedForChampId] = useState<number | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   const finalMatch = useLiveQuery(async () => {
     const matches = await db.matches.where('stage').equals(TournamentStage.FINAL).toArray();
@@ -60,7 +61,9 @@ export const ChampionCelebration: React.FC = () => {
 
   if (!isVisible || !champ) return null;
 
-  const imageName = champ.logoUrl.split('/').pop();
+  const imageName = `${champ.abbreviation.toUpperCase()}.png`;
+
+  console.log("URL img - Campeão Atual:",imageName);
   
   // Montamos o novo caminho apontando para a sua pasta de imagens 256x256
   const highResLogoUrl = `/plus-size/${imageName}`;
@@ -100,9 +103,10 @@ export const ChampionCelebration: React.FC = () => {
 
         <div className="relative flex flex-col items-center bg-linear-to-b from-white to-slate-100 p-12 rounded-full border-8 border-amber-400 shadow-[0_0_100px_rgba(234,179,8,0.5)]">
           <img 
-            src={highResLogoUrl} 
+            src={imgError ? champ.logoUrl : highResLogoUrl} 
             alt={champ.name} 
             className="w-48 h-48 object-contain drop-shadow-2xl animate-pulse" 
+            onError={() => setImgError(true)}
           />
         </div>
 
