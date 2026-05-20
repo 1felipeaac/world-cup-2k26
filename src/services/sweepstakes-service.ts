@@ -82,6 +82,7 @@ export const SweepstakesService = {
         [TournamentStage.ROUND_OF_16]: 3,
         [TournamentStage.QUARTER_FINALS]: 4,
         [TournamentStage.SEMI_FINALS]: 5,
+        [TournamentStage.THIRD_PLACE]: 5,
         [TournamentStage.FINAL]: 10,
       };
 
