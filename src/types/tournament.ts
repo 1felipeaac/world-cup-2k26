@@ -11,6 +11,7 @@ export enum TournamentStage {
   ROUND_OF_16 = "ROUND_OF_16",
   QUARTER_FINALS = "QUARTER_FINALS",
   SEMI_FINALS = "SEMI_FINALS",
+  THIRD_PLACE = "THIRD_PLACE",
   FINAL = "FINAL",
 }
 
@@ -65,3 +66,4 @@ export interface Round {
   id: number;
   matches: Match[];
 }
+

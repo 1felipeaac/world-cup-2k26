@@ -6,12 +6,15 @@ import type { SweepstakesUser } from "../types/bet";
 import { UserBetsPanel } from "../components/user-bets-panel";
 
 import { Trash2 } from 'lucide-react';
+import { ConfirmModal } from "../components/confirm-modal";
 
 export function Sweepstakes() {
   const [newUserName, setNewUserName] = useState("");
   const [selectedUser, setSelectedUser] = useState<SweepstakesUser | null>(
     null,
   );
+
+  const [participantToDelete, setParticipantToDelete] = useState<{ id: number; name: string } | null>(null);
 
   // O Dexie ordena automaticamente os utilizadores pela pontuação (do maior para o menor)
   const participants = useLiveQuery(() =>
@@ -30,28 +33,30 @@ export function Sweepstakes() {
     }
   };
 
-  const handleRemoveParticipant = async (
+  const handleRemoveClick = (
     userId: number,
     userName: string,
     e: React.MouseEvent,
   ) => {
     e.stopPropagation(); // 🛡️ Impede que o clique "vaze" para a <li> e abra o painel
+    setParticipantToDelete({ id: userId, name: userName });
+  };
 
-    const confirm = window.confirm(
-      `Atenção: Deseja realmente remover "${userName}" do bolão? \nIsso apagará TODOS os palpites dele e não pode ser desfeito.`,
-    );
+  const executeRemove = async () => {
+    if (!participantToDelete) return;
 
-    if (confirm) {
-      try {
-        await SweepstakesService.removeParticipant(userId);
+    try {
+      await SweepstakesService.removeParticipant(participantToDelete.id);
 
-        // Se o utilizador que acabámos de apagar estiver com o painel aberto, fechamo-lo!
-        if (selectedUser?.id === userId) {
-          setSelectedUser(null);
-        }
-      } catch (error) {
-        console.error("Erro ao remover participante:", error);
+      // Se o utilizador que acabámos de apagar estiver com o painel aberto, fechamo-lo!
+      if (selectedUser?.id === participantToDelete.id) {
+        setSelectedUser(null);
       }
+    } catch (error) {
+      console.error("Erro ao remover participante:", error);
+    } finally {
+      // Limpa o estado depois que terminar
+      setParticipantToDelete(null); 
     }
   };
 
@@ -151,8 +156,7 @@ export function Sweepstakes() {
 
                     {/* NOVO BOTÃO DE EXCLUIR */}
                     <button
-                      onClick={(e) =>
-                        handleRemoveParticipant(user.id!, user.name, e)
+                      onClick={(e) => handleRemoveClick(user.id!, user.name, e)
                       }
                       className="text-slate-300 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors"
                       title={`Remover ${user.name}`}
@@ -180,6 +184,15 @@ export function Sweepstakes() {
           </div>
         )}
       </div>
+      <ConfirmModal
+        isOpen={participantToDelete !== null}
+        onClose={() => setParticipantToDelete(null)}
+        onConfirm={executeRemove}
+        title="Remover Participante"
+        message={`Atenção: Deseja realmente remover "${participantToDelete?.name}" do bolão? Isso apagará TODOS os palpites dessa pessoa e não pode ser desfeito.`}
+        confirmText="Sim, remover"
+        variant="danger"
+      />
     </div>
   );
 }

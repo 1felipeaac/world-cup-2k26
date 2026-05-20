@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { SimulatorService } from '../services/simulator-service';
 import { Home, Trophy, Target, Settings, RotateCcw } from 'lucide-react';
+import { ConfirmModal } from './confirm-modal';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -12,19 +13,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
   // Estado que controla se a barra está recolhida ou não (apenas Desktop)
 
+  const [showResetModal, setShowResetModal] = useState(false);
 
-  const handleResetTournament = async () => {
-    const confirm = window.confirm(
-      "Atenção: Isto apagará TODOS os resultados e placares oficiais do simulador. O histórico do Bolão não será afetado. Deseja continuar?"
-    );
-    if (confirm) {
-      try {
-        await SimulatorService.resetTournament();
-      } catch (error) {
-        console.error("Erro ao resetar o torneio:", error);
-      }
+  const executeReset = async () => {
+    try {
+      await SimulatorService.resetTournament();
+      // Dica: Como você resetou o banco, é uma boa prática forçar um reload 
+      // ou atualizar o estado global para a tela refletir a mudança imediatamente:
+      window.location.reload(); 
+    } catch (error) {
+      console.error("Erro ao resetar o torneio:", error);
     }
   };
+
 
   const navItems = [
     { name: 'Simulador Oficial', path: '/', icon: <Home size={20} /> },
@@ -33,6 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   ];
 
   return (
+    <>
     <aside 
       className={`
         fixed z-50 bg-slate-900 text-slate-300 transition-all duration-300 ease-in-out
@@ -79,16 +81,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
 
       {/* Botão Reset */}
       <button
-        onClick={handleResetTournament}
+        onClick={() => setShowResetModal(true)}
         className="
-          flex md:hidden items-center justify-center
-          h-12 w-12 rounded-xl
+          flex items-center justify-center
+          h-12 w-12 md:w-full rounded-xl
           text-rose-400 hover:bg-rose-500 hover:text-white
-          transition-all
+          transition-all md:gap-2
         "
       >
-        <RotateCcw size={20} />
+        <span className='hidden md:block'>Reset</span>
+        <RotateCcw size={20}/>
       </button>
     </aside>
+    <ConfirmModal
+        isOpen={showResetModal}
+        onClose={() => setShowResetModal(false)}
+        onConfirm={executeReset}
+        title="Zerar Simulador"
+        message="Atenção: Isto apagará TODOS os resultados e placares oficiais do simulador. O histórico do Bolão não será afetado. Deseja continuar?"
+        confirmText="Sim, zerar tudo"
+        variant="danger"
+      />
+    </>
   );
 };

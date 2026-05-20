@@ -24,6 +24,8 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
   const sf = matches
     .filter((m) => m.stage === TournamentStage.SEMI_FINALS)
     .sort((a, b) => a.id - b.id);
+  const tp = matches
+    .find((m) => m.stage === TournamentStage.THIRD_PLACE)
   const final = matches.find((m) => m.stage === TournamentStage.FINAL);
 
   return (
@@ -72,15 +74,15 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
             ))}
           </div>
 
-          {/* Coluna 3: Quartos de Final (4 Jogos) */}
+          {/* Coluna 3: Quartas de Final (4 Jogos) */}
           <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-              Quartos
+              Quartas
             </h3>
             {Array.from({ length: 4 }).map((_, i) => (
               <KnockoutMatchCard
                 key={`qf-${i}`}
-                title={`Quarto ${i + 1}`}
+                title={`Quarta ${i + 1}`}
                 match={qf[i]}
                 onClick={setSelectedMatchId}
               />
@@ -103,16 +105,31 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </div>
 
           {/* Coluna 5: Grande Final (1 Jogo) */}
-          <div className="flex flex-col gap-4 w-60 shrink-0">
-            <h3 className="text-center text-xs font-black text-amber-400 uppercase tracking-widest mb-2">
-              Grande Final
-            </h3>
-            <KnockoutMatchCard
-              key="final"
-              title="Final"
-              match={final}
-              onClick={setSelectedMatchId}
-            />
+          <div className="flex flex-col gap-8 w-60 shrink-0">
+            <div>
+              <h3 className="text-center text-xs font-black text-amber-400 uppercase tracking-widest mb-2">
+                Grande Final
+              </h3>
+              <KnockoutMatchCard
+                key="final"
+                title="Final"
+                match={final}
+                onClick={setSelectedMatchId}
+              />
+            </div>
+
+            {/* Seção do 3º Lugar adicionada perfeitamente na base da coluna */}
+            <div className="border-t border-slate-700/50 pt-4">
+              <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                Disputa de 3º Lugar
+              </h3>
+              <KnockoutMatchCard
+                key="third-place"
+                title="3º Lugar"
+                match={tp}
+                onClick={setSelectedMatchId}
+              />
+            </div>
           </div>
 
         </div>

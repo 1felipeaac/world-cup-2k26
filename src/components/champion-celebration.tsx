@@ -35,8 +35,8 @@ export const ChampionCelebration: React.FC = () => {
     ];
     const generateConfetti = () => Array.from({ length: 20 }).map((_, i) => ({
       id: i,
-      delay: Math.random() * 8,
-      duration: 2 + Math.random() * 8,
+      delay: Math.random() * 6,
+      duration: 2 + Math.random() * 7,
       emoji: emojis[Math.floor(Math.random() * emojis.length)],
     }));
     return generateConfetti();

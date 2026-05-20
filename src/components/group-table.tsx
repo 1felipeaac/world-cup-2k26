@@ -6,6 +6,8 @@ import { MatchRow } from "./match-row";
 import { MatchRepository } from "../repositories/match-repository";
 import { SimulatorService } from "../services/simulator-service";
 import { TeamDisplay } from "./ui/team-display";
+import { Trash2 } from 'lucide-react';
+import { ConfirmModal } from "./confirm-modal";
 
 interface GroupTableProps {
   groupId: number;
@@ -20,6 +22,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeRound, setActiveRound] = useState(1);
+  const [showGroupResetModal, setShowGroupResetModal] = useState(false);
 
   const matches =
     useLiveQuery(
@@ -36,17 +39,16 @@ export const GroupTable: React.FC<GroupTableProps> = ({
   });
 
   const handleResetGroup = async () => {
-    if (
-      window.confirm(
-        `Tem certeza que deseja zerar os placares do ${groupName}?`,
-      )
-    ) {
+    setShowGroupResetModal(false)
+    
       try {
         await SimulatorService.resetGroup(groupId);
+
+        window.location.reload()
+         
       } catch (error) {
         console.error("Erro ao resetar o grupo:", error);
       }
-    }
   };
 
   return (
@@ -56,23 +58,11 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         <h3 className="font-bold text-slate-800">{groupName}</h3>
         <div className="flex items-center gap-4">
           <button
-            onClick={handleResetGroup}
+            onClick={() => setShowGroupResetModal(true)}
             title="Limpar placares deste grupo"
             className="text-xs font-semibold text-rose-500 hover:text-rose-700 transition-colors flex items-center gap-1"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
+            <Trash2 size={16}/>
             <span className="hidden sm:inline">Limpar</span>
           </button>
 
@@ -190,6 +180,15 @@ export const GroupTable: React.FC<GroupTableProps> = ({
           </div>
         </div>
       </div>
+      <ConfirmModal
+    isOpen={showGroupResetModal}
+    onClose={handleResetGroup}
+    onConfirm={() => SimulatorService.resetGroup(groupId)}
+    title="Zerar Grupo"
+    message={`Tem certeza que deseja apagar todos os resultados do Grupo ${groupName}? Os times voltarão a ter zero pontos.`}
+    confirmText="Zerar Grupo"
+    variant="warning" // Podemos usar warning (laranja) por ser menos destrutivo que o geral
+  />
     </div>
   );
 };

@@ -225,11 +225,11 @@ export const SimulatorService = {
   },
 
   generateKnockoutMatches: async () => {
-    // 1. Vai buscar as 32 equipas apuradas
+    
     const { directlyClassified, bestThirds } =
       await SimulatorService.getClassifiedTeams();
 
-    // Como o directlyClassified tem o 1º e 2º de cada grupo intercalados, vamos separá-los
+    
     const firstPlaces = directlyClassified.filter(
       (_, index) => index % 2 === 0,
     );
@@ -237,8 +237,7 @@ export const SimulatorService = {
       (_, index) => index % 2 !== 0,
     );
 
-    // 2. Cria os Potes de Sorteio (Seeding)
-    // Ordenamos os segundos lugares pela sua força (pontos, saldo) para sabermos quem são os 4 melhores
+    
     secondPlaces.sort(
       (a, b) =>
         b.stats.points - a.stats.points ||
@@ -294,7 +293,6 @@ export const SimulatorService = {
     homePenalties: number | null,
     awayPenalties: number | null,
   ) => {
-    // Colocamos tudo numa transação para garantir que a árvore não se quebra se houver um erro a meio
     await db.transaction("rw", db.matches, async () => {
       // 1. Grava o resultado do jogo atual
       await db.matches.update(matchId, {
@@ -307,82 +305,79 @@ export const SimulatorService = {
       const currentMatch = await db.matches.get(matchId);
       if (!currentMatch) return;
 
-      // 2. Descobre quem ganhou o jogo (Tempo Regulamentar ou Penáltis)
+      // 2. Descobre quem ganhou E quem perdeu
       let winnerId: number;
+      let loserId: number; 
+
       if (homeGoals > awayGoals) {
         winnerId = currentMatch.homeTeamId;
+        loserId = currentMatch.awayTeamId;
       } else if (awayGoals > homeGoals) {
         winnerId = currentMatch.awayTeamId;
+        loserId = currentMatch.homeTeamId;
       } else {
-        // Se for empate absoluto nos golos, o vencedor é decidido pelos penáltis
+        // Empate decidido nos penáltis
         if (
           homePenalties !== null &&
           awayPenalties !== null &&
           homePenalties > awayPenalties
         ) {
           winnerId = currentMatch.homeTeamId;
+          loserId = currentMatch.awayTeamId;
         } else {
           winnerId = currentMatch.awayTeamId;
+          loserId = currentMatch.homeTeamId;
         }
       }
 
-      // 3. Algoritmo de Avanço na Árvore (Onde o vencedor vai jogar a seguir?)
+      // 3. Algoritmo de Avanço na Árvore
       let nextMatchId = null;
       let nextStage = null;
       let isHomeInNextMatch = true;
 
       if (matchId >= 73 && matchId <= 88) {
-        // Estamos nos 16-avos
-        const index = matchId - 73; // Índice de 0 a 15
+        const index = matchId - 73;
         nextMatchId = 89 + Math.floor(index / 2);
         nextStage = TournamentStage.ROUND_OF_16;
-        isHomeInNextMatch = index % 2 === 0; // Pares vão para a Casa (Topo), Ímpares vão para Fora (Fundo)
+        isHomeInNextMatch = index % 2 === 0;
       } else if (matchId >= 89 && matchId <= 96) {
-        // Estamos nas Oitavas
         const index = matchId - 89;
         nextMatchId = 97 + Math.floor(index / 2);
         nextStage = TournamentStage.QUARTER_FINALS;
         isHomeInNextMatch = index % 2 === 0;
       } else if (matchId >= 97 && matchId <= 100) {
-        // Estamos nos Quartos
         const index = matchId - 97;
         nextMatchId = 101 + Math.floor(index / 2);
         nextStage = TournamentStage.SEMI_FINALS;
         isHomeInNextMatch = index % 2 === 0;
       } else if (matchId >= 101 && matchId <= 102) {
-        // Estamos nas Semis
         const index = matchId - 101;
-        nextMatchId = 103;
+        nextMatchId = 103; // 103 é a Final
         nextStage = TournamentStage.FINAL;
         isHomeInNextMatch = index % 2 === 0;
       }
 
-      // Se for a Grande Final (103), não há próximo jogo a gerar
       if (!nextMatchId || !nextStage) return;
 
-      // 4. Injeta o vencedor no próximo jogo
+      // 4. Injeta o VENCEDOR no próximo jogo (Lógica Original Mantida)
       const nextMatch = await db.matches.get(nextMatchId);
 
-      if (nextMatch) {
-        // Se o jogo já existe (ex: o utilizador mudou de ideias num jogo anterior)
-        // Precisamos limpar o placar desse jogo futuro por segurança
-        const updateData: any = {
-          homeTeamGoals: null,
-          awayTeamGoals: null,
-          homeTeamPenalties: null,
-          awayTeamPenalties: null,
-        };
+      const updateWinnerData: Partial<Match> = {
+        homeTeamGoals: null,
+        awayTeamGoals: null,
+        homeTeamPenalties: null,
+        awayTeamPenalties: null,
+      };
 
-        if (isHomeInNextMatch) {
-          updateData.homeTeamId = winnerId;
-        } else {
-          updateData.awayTeamId = winnerId;
-        }
-
-        await db.matches.update(nextMatchId, updateData);
+      if (isHomeInNextMatch) {
+        updateWinnerData.homeTeamId = winnerId;
       } else {
-        // Se o jogo ainda não existe (primeiro cruzamento), criamos o registo dinamicamente.
-        // O ID 0 serve como "A definir" pois o Dexie só tem IDs reais a partir do 1.
+        updateWinnerData.awayTeamId = winnerId;
+      }
+
+      if (nextMatch) {
+        await db.matches.update(nextMatchId, updateWinnerData);
+      } else {
         await db.matches.put({
           id: nextMatchId,
           stage: nextStage,
@@ -395,6 +390,45 @@ export const SimulatorService = {
           date: null,
         });
       }
+
+      // 5. 🚀 NOVA LÓGICA: Injeta o PERDEDOR na Disputa de 3º Lugar (Se a próxima fase for a Final)
+      if (nextStage === TournamentStage.FINAL) {
+        const thirdPlaceMatchId = 104; // Definimos o 104 para o jogo de 3º lugar
+        const thirdPlaceMatch = await db.matches.get(thirdPlaceMatchId);
+
+        const updateLoserData: Partial<Match> = {
+          homeTeamGoals: null,
+          awayTeamGoals: null,
+          homeTeamPenalties: null,
+          awayTeamPenalties: null,
+        };
+
+        // Aproveitamos a mesma matemática: O perdedor da Semi 1 fica em Casa, o da Semi 2 fica Fora
+        if (isHomeInNextMatch) {
+          updateLoserData.homeTeamId = loserId;
+        } else {
+          updateLoserData.awayTeamId = loserId;
+        }
+
+        if (thirdPlaceMatch) {
+          await db.matches.update(thirdPlaceMatchId, updateLoserData);
+        } else {
+          // Cria o jogo de 3º lugar se ele ainda não existir!
+          await db.matches.put({
+            id: thirdPlaceMatchId,
+            stage: TournamentStage.THIRD_PLACE, 
+            homeTeamId: isHomeInNextMatch ? loserId : 0,
+            awayTeamId: !isHomeInNextMatch ? loserId : 0,
+            homeTeamGoals: null,
+            awayTeamGoals: null,
+            homeTeamPenalties: null,
+            awayTeamPenalties: null,
+            date: null,
+          });
+        }
+        console.log(`🥉 Perdedor enviado para a disputa de 3º Lugar (Jogo ${thirdPlaceMatchId})!`);
+      }
+
     });
 
     console.log(`🚀 Vencedor avançado para o jogo ${matchId}!`);
