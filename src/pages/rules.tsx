@@ -1,9 +1,10 @@
 import React from 'react';
 import { Trophy, Target, Calculator, AlertCircle, CheckCircle2, Swords } from 'lucide-react';
+import Container from '../components/container';
 
 export const Rules: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto pb-12 animate-in fade-in duration-500">
+    <Container className="pb-12 animate-in fade-in duration-500">
       
       {/* Cabeçalho */}
       <header className="mb-10 text-center md:text-left">
@@ -135,6 +136,6 @@ export const Rules: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </Container>
   );
 };

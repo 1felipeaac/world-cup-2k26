@@ -7,6 +7,7 @@ import { UserBetsPanel } from "../components/user-bets-panel";
 
 import { Trash2 } from 'lucide-react';
 import { ConfirmModal } from "../components/confirm-modal";
+import Container from "../components/container";
 
 export function Sweepstakes() {
   const [newUserName, setNewUserName] = useState("");
@@ -61,7 +62,7 @@ export function Sweepstakes() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <Container>
       {" "}
       {/* Aumentei a largura máxima para dar espaço ao Master-Detail */}
       <header className="mb-8">
@@ -193,6 +194,6 @@ export function Sweepstakes() {
         confirmText="Sim, remover"
         variant="danger"
       />
-    </div>
+    </Container>
   );
 }

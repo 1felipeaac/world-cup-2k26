@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { SimulatorService } from '../services/simulator-service';
-import { Home, Trophy, Target, Settings, RotateCcw, UserCircle, HelpCircle } from 'lucide-react';
+import { Home, Trophy, Target, Settings, RotateCcw, UserCircle, HelpCircle, BarChart3 } from 'lucide-react';
 import { ConfirmModal } from './confirm-modal';
 
 interface SidebarProps {
@@ -33,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     { name: 'Modo Bolão', path: '/bolao', icon: <Target size={20} /> },
     { name: 'Como Jogar', path: '/regras', icon: <HelpCircle size={20} /> },
     { name: 'Desenvolvedor', path: '/sobre', icon: <UserCircle size={20} /> },
+    { name: 'Estatísticas', path: '/estatisticas', icon: <BarChart3 size={20} /> },
   ];
 
   return (

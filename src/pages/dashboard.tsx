@@ -1,6 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/database";
 import { GroupTable } from "../components/group-table";
+import Container from "../components/container";
 
 export function Dashboard() {
   const groups = useLiveQuery(() => db.groups.toArray());
@@ -9,7 +10,7 @@ export function Dashboard() {
   if (!groups || !allTeams) return null;
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <Container>
       <header className="mb-8">
 
         <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">
@@ -21,7 +22,6 @@ export function Dashboard() {
        
       </header>
 
-      {/* Layout de 1 Card por linha, sem barra de rolagem! */}
       <div className="flex flex-col gap-8">
         {groups.map((group) => {
           const groupTeams = allTeams.filter((team) =>
@@ -38,6 +38,6 @@ export function Dashboard() {
           );
         })}
       </div>
-    </div>
+    </Container>
   );
 }

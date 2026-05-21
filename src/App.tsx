@@ -6,9 +6,9 @@ import { Sweepstakes } from './pages/sweepstakes';
 import { KnockoutStage } from './pages/knockout-stage';
 import { Rules } from './pages/rules';
 import { About } from './pages/about';
+import { Stats } from './pages/stats';
 
 function App() {
-
 
   return (
     <DatabaseProvider>
@@ -20,6 +20,7 @@ function App() {
             <Route path="/mata-mata" element={<KnockoutStage />} />
             <Route path="/regras" element={<Rules />} />
             <Route path="/sobre" element={<About />} />
+            <Route path="/estatisticas" element={<Stats />} />
           </Route>
         </Routes>
       </Router>

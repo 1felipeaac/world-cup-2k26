@@ -1,5 +1,6 @@
 import React from 'react';
 import { GitBranch, Link2, Mail, Code2, Database, Monitor, Flame, Terminal, ArrowUpRight } from 'lucide-react';
+import Container from '../components/container';
 
 export const About: React.FC = () => {
   // Ajuste com os seus dados reais de contato
@@ -10,7 +11,7 @@ export const About: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto pb-16 animate-in fade-in duration-500">
+    <Container className="pb-16 animate-in fade-in duration-500">
       
       {/* Cabeçalho */}
       <header className="mb-10 text-center md:text-left">
@@ -163,6 +164,6 @@ export const About: React.FC = () => {
         </div>
 
       </div>
-    </div>
+    </Container>
   );
 };
