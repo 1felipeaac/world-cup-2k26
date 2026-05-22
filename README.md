@@ -13,7 +13,6 @@ Uma aplicação web interativa e responsiva para simular o Campeonato do Mundo d
 
 ## 📸 Demonstração Visual
 
-*(Adicione aqui um pequeno GIF a demonstrar a utilização ou alguns prints do seu ecrã)*
 <p align="center">
   <img src="./public/placeholder-home.png" width="400" alt="Ecrã Inicial no Telemóvel" />
   <img src="./public/placeholder-bracket.png" width="400" alt="Chaveamento de Eliminatórias" />
