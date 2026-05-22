@@ -23,7 +23,7 @@ export const Stats: React.FC = () => {
   if (!rankedTeams) return <div className="p-8 text-center text-slate-500">Carregando estatísticas...</div>;
 
   return (
-    <Container className="pb-16 animate-in fade-in duration-500">
+    <Container className="pb-6 animate-in fade-in duration-500">
       
       <header className="mb-10 text-center md:text-left">
         <h1 className="text-3xl md:text-4xl font-black text-slate-800 uppercase tracking-tighter italic flex items-center justify-center md:justify-start gap-3">

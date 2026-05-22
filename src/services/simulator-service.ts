@@ -10,9 +10,7 @@ import { MatchRepository } from "../repositories/match-repository";
 import { SweepstakesService } from "./sweepstakes-service";
 
 export const SimulatorService = {
-  /**
-   * Atualiza o placar de uma partida e engatilha o recálculo dos times
-   */
+  
   updateMatchScore: async (
     matchId: number,
     homeGoals: number,
@@ -20,7 +18,6 @@ export const SimulatorService = {
   ) => {
     if (homeGoals < 0 || awayGoals < 0) return;
 
-    // 2. ATENÇÃO: Tem que adicionar a tabela db.sweepstakesUsers e db.sweepstakesBets no array da transação!
     await db.transaction(
       "rw",
       [db.matches, db.teams, db.sweepstakesUsers, db.sweepstakesBets],
@@ -28,17 +25,14 @@ export const SimulatorService = {
         const match = await db.matches.get(matchId);
         if (!match) throw new Error("Partida não encontrada");
 
-        // Atualiza o jogo
         await db.matches.update(matchId, {
           homeTeamGoals: homeGoals,
           awayTeamGoals: awayGoals,
         });
 
-        // Recalcula os times oficiais
         await SimulatorService.recalculateTeamStats(match.homeTeamId);
         await SimulatorService.recalculateTeamStats(match.awayTeamId);
 
-        // 3. A MAGIA ACONTECE AQUI: Recalcula o Bolão imediatamente!
         await SweepstakesService.recalculateAllSweeptakesScores();
       },
     );

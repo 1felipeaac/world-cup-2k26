@@ -85,18 +85,6 @@ export function KnockoutStage() {
           </p>
         </div>
 
-        {/* O Botão agora verifica o tamanho real do array desembrulhado */}
-        {allMatches.length <= 72 && (
-          <button
-            onClick={handleGenerateBracket}
-            disabled={isGenerating}
-            className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-rose-600 to-rose-500 text-white font-bold rounded-xl hover:from-rose-500 hover:to-rose-400 transition-all shadow-md hover:shadow-lg disabled:opacity-50 whitespace-nowrap"
-          >
-            {isGenerating ? "A Processar..." : "Gerar Chaveamento Oficial"}
-            <span className="text-xl">🏆</span>
-          </button>
-        )}
-
         {isGroupStageFinished && allMatches.length <= 72 && (
           <button
             onClick={handleGenerateBracket}
