@@ -62,8 +62,7 @@ export function Sweepstakes() {
   };
 
   return (
-    <Container>
-      {" "}
+    <Container className="md:max-w-5xl">
       {/* Aumentei a largura máxima para dar espaço ao Master-Detail */}
       <header className="mb-8">
         <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">

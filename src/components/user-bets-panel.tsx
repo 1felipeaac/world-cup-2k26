@@ -69,7 +69,7 @@ export const UserBetsPanel: React.FC<UserBetsPanelProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col md:min-w-xl">
       {/* Cabeçalho do Participante */}
       <div className="bg-slate-900 p-6 flex justify-between items-center text-white shrink-0">
         <div className="flex items-center gap-4">
