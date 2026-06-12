@@ -36,8 +36,8 @@ export const Schedule: React.FC = () => {
       let timeLabel = "--:--";
       if (match.date) {
         const d = new Date(match.date);
-        dateLabel = d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' });
-        timeLabel = d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+        dateLabel = d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+        timeLabel = d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
       }
 
       const homeTeam = teamsMap.get(match.homeTeamId);
