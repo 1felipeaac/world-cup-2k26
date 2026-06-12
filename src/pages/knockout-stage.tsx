@@ -97,7 +97,7 @@ export function KnockoutStage() {
         )}
       </header>
 
-      {allMatches.length <= 72 ? (
+      {isGroupStageFinished && allMatches.length <= 72 ? (
         <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-5 mb-6 text-sm font-medium flex items-center gap-3">
           <span>💡</span>
           <span>
@@ -107,7 +107,7 @@ export function KnockoutStage() {
         </div>
       ) : null}
 
-      {/* SEÇÃO 1: Classificados Diretos */}
+     
       <QualificationSection
         title="Classificação Direta (1º e 2º lugares)"
         teams={directlyClassified}
@@ -116,7 +116,7 @@ export function KnockoutStage() {
         gridCols="grid-cols-2 md:grid-cols-4 lg:grid-cols-6"
       />
 
-      {/* SEÇÃO 2: Repescagem */}
+     
       <QualificationSection
         title="Melhores Terceiros Colocados"
         teams={bestThirds}

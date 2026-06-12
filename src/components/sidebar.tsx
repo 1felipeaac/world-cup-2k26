@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { SimulatorService } from '../services/simulator-service';
-import { Home, Trophy, Target, Settings, RotateCcw, UserCircle, HelpCircle, BarChart3 } from 'lucide-react';
+import { Home, Trophy, Target, Settings, RotateCcw, UserCircle, HelpCircle, BarChart3, Calendar } from 'lucide-react';
 import { ConfirmModal } from './confirm-modal';
 
 interface SidebarProps {
@@ -11,15 +11,15 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
-  // Estado que controla se a barra está recolhida ou não (apenas Desktop)
+  
 
   const [showResetModal, setShowResetModal] = useState(false);
 
   const executeReset = async () => {
     try {
       await SimulatorService.resetTournament();
-      // Dica: Como você resetou o banco, é uma boa prática forçar um reload 
-      // ou atualizar o estado global para a tela refletir a mudança imediatamente:
+      
+      
       window.location.reload(); 
     } catch (error) {
       console.error("Erro ao resetar o torneio:", error);
@@ -34,6 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     { name: 'Como Jogar', path: '/regras', icon: <HelpCircle size={20} /> },
     { name: 'Desenvolvedor', path: '/sobre', icon: <UserCircle size={20} /> },
     { name: 'Estatísticas', path: '/estatisticas', icon: <BarChart3 size={20} /> },
+    { name: 'Calendário', path: '/calendario', icon: <Calendar size={20} /> },
   ];
 
   return (
@@ -48,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         ${isCollapsed ? 'md:w-20' : 'md:w-64'}
       `}
     >
-      {/* Cabeçalho Desktop */}
+      
       <div className={`hidden md:flex p-6 items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
         <div className={`transition-opacity duration-300 overflow-hidden ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
           <h2 className="text-xl font-black text-white italic tracking-tighter">COPA<span className="text-blue-500">2026</span></h2>
@@ -58,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         </button>
       </div>
 
-      {/* Navegação */}
+      
       <nav className="flex flex-row md:flex-col w-full md:flex-1 md:px-4 px-1 gap-1 md:gap-2 justify-around md:justify-start items-center md:items-stretch">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -82,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         })}
       </nav>
 
-      {/* Botão Reset */}
+      
       <button
         onClick={() => setShowResetModal(true)}
         className="

@@ -2,7 +2,7 @@ import React from 'react';
 import { type Team } from '../../types/tournament';
 import { TeamDisplay } from './team-display';
 
-// --- COMPONENTE DO CARTÃO (Interno) ---
+
 interface QualifiedTeamCardProps {
   team: Team;
   index: number;
@@ -12,7 +12,7 @@ interface QualifiedTeamCardProps {
 const QualifiedTeamCard: React.FC<QualifiedTeamCardProps> = ({ team, index, variant }) => {
   const isDirect = variant === 'direct';
 
-  // Dicionários de classes baseados na variante (Azul vs Amarelo)
+ 
   const containerClass = isDirect
     ? "bg-white border-slate-200 hover:shadow-md"
     : "bg-linear-to-b from-white to-amber-50/30 border-amber-200 hover:border-amber-400";
@@ -24,26 +24,25 @@ const QualifiedTeamCard: React.FC<QualifiedTeamCardProps> = ({ team, index, vari
   return (
   <div className={`border rounded-xl p-3 flex flex-col items-center justify-start shadow-sm transition-all relative overflow-hidden min-h-35 ${containerClass}`}>
     
-    {/* Barra do topo */}
+    
     <div className={`absolute top-0 w-full h-1 ${topBarClass}`}></div>
     
-    {/* Posição */}
+  
     <span className={`absolute top-2 left-2 text-[10px] font-black ${indexClass}`}>
       {index + 1}
     </span>
 
-    {/* O nosso TeamDisplay blindado */}
+  
     <div className="w-full mt-4">
       <TeamDisplay 
         team={team} 
         isVertical={true}
         imageClassName={isDirect ? "w-10 h-10" : "w-8 h-8"}
-        // Garantimos que o texto não force a quebra de linha agressiva
         textClassName={`font-bold text-slate-700 text-center whitespace-normal break-words ${isDirect ? 'text-xs' : 'text-[10px]'}`}
       />
     </div>
 
-    {/* Pontos - Centralizado na base */}
+   
     <span className={`text-[10px] font-medium mt-auto mb-2 ${statsClass}`}>
       {team.stats.points} PTS {isDirect && `• SG: ${team.stats.goalDifference}`}
     </span>
@@ -52,7 +51,7 @@ const QualifiedTeamCard: React.FC<QualifiedTeamCardProps> = ({ team, index, vari
 };
 
 
-// --- COMPONENTE DA SEÇÃO (Exportado) ---
+
 interface QualificationSectionProps {
   title: string;
   teams: Team[];
@@ -66,7 +65,7 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
   teams,
   maxTeams,
   variant = 'direct',
-  //gridCols = "grid-cols-2 md:grid-cols-4 lg:grid-cols-6"
+
 }) => {
   const isDirect = variant === 'direct';
   
@@ -75,7 +74,7 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
 
   return (
     <section className="mb-10 w-75 md:w-full">
-      {/* Cabeçalho da Seção */}
+      
       <div className="flex items-center gap-3 mb-6">
         <div className={`h-8 w-2 rounded-full ${barClass}`}></div>
         <h2 className="text-xl font-bold text-slate-800">{title}</h2>
@@ -84,7 +83,7 @@ export const QualificationSection: React.FC<QualificationSectionProps> = ({
         </span>
       </div>
 
-      {/* Grid de Times */}
+
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
         {teams.map((team, index) => (
             <QualifiedTeamCard 

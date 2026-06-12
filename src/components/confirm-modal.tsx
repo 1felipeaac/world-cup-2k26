@@ -9,7 +9,7 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  // Permite mudar a cor do botão dependendo do nível do perigo
+  
   variant?: 'danger' | 'warning'; 
 }
 
@@ -33,7 +33,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Cabeçalho */}
+       
         <div className="flex justify-between items-center p-4 border-b border-slate-700/50">
           <div className="flex items-center gap-3">
             <div className={`p-2 rounded-full ${isDanger ? 'bg-rose-500/20 text-rose-400' : 'bg-amber-500/20 text-amber-400'}`}>
@@ -49,14 +49,14 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </button>
         </div>
 
-        {/* Corpo */}
+       
         <div className="p-6">
           <p className="text-slate-300 text-sm leading-relaxed">
             {message}
           </p>
         </div>
 
-        {/* Rodapé / Ações */}
+       
         <div className="p-4 bg-slate-800/50 border-t border-slate-700/50 flex justify-end gap-3">
           <button
             onClick={onClose}
@@ -67,7 +67,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <button
             onClick={() => {
               onConfirm();
-              onClose(); // Fecha o modal após confirmar
+              onClose(); 
             }}
             className={`px-4 py-2 text-sm font-bold text-white rounded-xl shadow-md transition-all active:scale-95 ${
               isDanger 

@@ -30,7 +30,6 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
 
   return (
     <>
-      {/* WRAPPER COM SCROLL: Adicionamos custom-scrollbar se você quiser estilizar no CSS depois */}
       <div className="w-75 md:w-full mt-12 bg-slate-800 rounded-3xl p-8 overflow-x-auto shadow-inner relative custom-scrollbar">
         
         <h2 className="text-xl font-black text-white mb-8 flex items-center gap-3 sticky left-0 w-max">
@@ -40,11 +39,11 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
           </span>
         </h2>
 
-        {/* Container principal: min-w-max garante que ele expanda o quanto for preciso */}
+
         <div className="flex gap-8 md:gap-10 min-w-max pb-8 items-start">
           
-          {/* Coluna 1: 16-Avos de Final (16 Jogos) */}
-          {/* 🚀 SOLUÇÃO: w-60 shrink-0 trava a largura da coluna! */}
+  
+  
           <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               16-Avos
@@ -59,7 +58,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
             ))}
           </div>
 
-          {/* Coluna 2: Oitavas de Final (8 Jogos) */}
+  
           <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Oitavas
@@ -74,7 +73,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
             ))}
           </div>
 
-          {/* Coluna 3: Quartas de Final (4 Jogos) */}
+  
           <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Quartas
@@ -89,7 +88,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
             ))}
           </div>
 
-          {/* Coluna 4: Semifinais (2 Jogos) */}
+  
           <div className="flex flex-col gap-4 w-60 shrink-0">
             <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
               Semifinais
@@ -104,7 +103,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
             ))}
           </div>
 
-          {/* Coluna 5: Grande Final (1 Jogo) */}
+  
           <div className="flex flex-col gap-8 w-60 shrink-0">
             <div>
               <h3 className="text-center text-xs font-black text-amber-400 uppercase tracking-widest mb-2">
@@ -118,7 +117,7 @@ export const KnockoutBracket: React.FC<KnockoutBracketProps> = ({
               />
             </div>
 
-            {/* Seção do 3º Lugar adicionada perfeitamente na base da coluna */}
+    
             <div className="border-t border-slate-700/50 pt-4">
               <h3 className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                 Disputa de 3º Lugar

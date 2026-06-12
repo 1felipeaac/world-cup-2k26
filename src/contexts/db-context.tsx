@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { initializeDatabase } from '../db/seed';
 
@@ -25,7 +26,7 @@ export const DatabaseProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   return (
     <DatabaseContext.Provider value={{ isDbReady }}>
-      {/* Enquanto o banco não estiver pronto, mostramos um Loading ou Splash */}
+      
       {isDbReady ? children : (
         <div className="h-screen w-full flex flex-col items-center justify-center bg-blue-900 text-white">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-yellow-400 mb-4"></div>

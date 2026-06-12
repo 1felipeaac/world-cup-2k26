@@ -11,7 +11,7 @@ interface MatchRowProps {
 }
 
 export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
-  // Vamos buscar as equipes à base de dados através dos IDs guardados na partida
+  
   const homeTeam = useLiveQuery(
     () => db.teams.get(match.homeTeamId),
     [match.homeTeamId],
@@ -21,7 +21,7 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
     [match.awayTeamId],
   );
 
-  // Usamos Refs para os inputs para evitar re-renderizações desnecessárias enquanto o utilizador digita
+  
   const homeInputRef = useRef<HTMLInputElement>(null);
   const awayInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,11 +37,11 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
     )
       return;
 
-    // Converte para número e garante que nunca é menor que 0
+    
     const newHomeScore = Math.max(0, parseInt(homeVal, 10));
     const newAwayScore = Math.max(0, parseInt(awayVal, 10));
 
-    // Feedback Visual: Se o utilizador digitou -2, o input volta a mostrar 0
+    
     if (homeInputRef.current)
       homeInputRef.current.value = newHomeScore.toString();
     if (awayInputRef.current)
@@ -64,10 +64,10 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
     }
   };
 
-  // Previne a renderização se os dados das equipes ainda não tiverem sido carregados do Dexie
+  
   if (!homeTeam || !awayTeam) return null;
 
-  // Formatação profissional da Data e Hora
+  
   const matchDate = new Date(match.date ?? 0);
   const formattedDate = matchDate.toLocaleDateString("pt-PT", {
     day: "2-digit",
@@ -80,14 +80,14 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
 
   return (
     <div className="bg-white rounded-lg border border-slate-100 p-3 shadow-sm hover:shadow-md transition-shadow">
-      {/* Cabeçalho da Partida (Data e Hora) */}
+      S
       <div className="flex justify-center mb-3">
         <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase bg-slate-100 px-3 py-1 rounded-full">
           {formattedDate} • {formattedTime}
         </span>
       </div>
 
-      {/* Grid do Placar */}
+      S
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
 
         <div className="flex justify-end">

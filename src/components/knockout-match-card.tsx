@@ -4,7 +4,7 @@ import { db } from "../db/database";
 import type { Match, Team } from "../types/tournament";
 
 interface KnockoutMatchCardProps {
-  match?: Match; // Se não vier match, ele renderiza o esqueleto
+  match?: Match; 
   title: string;
   isFinal?: boolean;
   onClick?: (matchId: number) => void;
@@ -19,7 +19,7 @@ export const KnockoutMatchCard: React.FC<KnockoutMatchCardProps> = ({
   const [showHomeName, setShowHomeName] = useState(false);
   const [showAwayName, setShowAwayName] = useState(false);
 
-  // Busca as equipas apenas se o match existir
+  
   const homeTeam = useLiveQuery<Team | undefined>(() => {
     if (!match?.homeTeamId) return undefined;
     return db.teams.get(match.homeTeamId);
@@ -44,7 +44,7 @@ export const KnockoutMatchCard: React.FC<KnockoutMatchCardProps> = ({
           : "border-slate-200"
       } ${!match ? "opacity-40" : "hover:border-blue-400 hover:shadow-md cursor-pointer"}`}
     >
-      {/* Cabeçalho do Jogo */}
+      
       <div
         className={`text-[9px] font-black px-2 py-1 uppercase text-center border-b tracking-tighter ${
           isFinal
@@ -56,12 +56,12 @@ export const KnockoutMatchCard: React.FC<KnockoutMatchCardProps> = ({
       </div>
 
       <div className="flex flex-col bg-white">
-        {/* Equipa Casa */}
+        
         <div className="flex justify-between items-center px-3 py-2.5 border-b border-slate-50">
           <div
             className="flex items-center gap-2 overflow-hidden cursor-pointer"
             onClick={(e) => {
-              e.stopPropagation(); // Impede que o clique abra o modal do jogo
+              e.stopPropagation(); 
               setShowHomeName(!showHomeName);
             }}
           >
@@ -78,7 +78,7 @@ export const KnockoutMatchCard: React.FC<KnockoutMatchCardProps> = ({
                 >
                   {homeTeam.name}
                 </span>
-                {/* Aparece só em telas pequenas (mobile) */}
+                
                 <span
                   className="text-xs font-bold text-slate-700 block sm:hidden"
                   title={homeTeam.name}
@@ -106,12 +106,12 @@ export const KnockoutMatchCard: React.FC<KnockoutMatchCardProps> = ({
           </div>
         </div>
 
-        {/* Equipa Fora */}
+        
         <div className="flex justify-between items-center px-3 py-2.5">
           <div
             className="flex items-center gap-2 overflow-hidden cursor-pointer"
             onClick={(e) => {
-              e.stopPropagation(); // Impede que o clique abra o modal do jogo
+              e.stopPropagation(); 
               setShowAwayName(!showAwayName);
             }}
           >

@@ -6,7 +6,6 @@ export const Rules: React.FC = () => {
   return (
     <Container className="pb-12 animate-in fade-in duration-500">
       
-      {/* Cabeçalho */}
       <header className="mb-10 text-center md:text-left">
         <h1 className="text-3xl md:text-4xl font-black text-slate-800 uppercase tracking-tighter italic">
           Como <span className="text-blue-600">Jogar</span>
@@ -18,7 +17,7 @@ export const Rules: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* SEÇÃO 1: O Simulador */}
+
         <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 md:col-span-2">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
@@ -48,7 +47,7 @@ export const Rules: React.FC = () => {
           </div>
         </div>
 
-        {/* SEÇÃO 2: O Bolão */}
+
         <div className="bg-slate-900 rounded-3xl p-6 shadow-xl border border-slate-800 md:col-span-2 text-slate-300 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-16 opacity-5 pointer-events-none">
             <Calculator size={200} />
@@ -66,7 +65,7 @@ export const Rules: React.FC = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-            {/* Bloco de Pontos Base */}
+    
             <div className="space-y-4">
               <h3 className="text-white font-bold mb-3 border-b border-slate-700 pb-2">Pontuação Base</h3>
               
@@ -87,7 +86,7 @@ export const Rules: React.FC = () => {
               </div>
             </div>
 
-            {/* Bloco de Multiplicadores */}
+    
             <div>
               <h3 className="text-white font-bold mb-3 border-b border-slate-700 pb-2">Multiplicadores por Fase</h3>
               <ul className="space-y-2 text-sm">
@@ -124,7 +123,7 @@ export const Rules: React.FC = () => {
           </div>
         </div>
 
-        {/* SEÇÃO 3: Avisos */}
+
         <div className="bg-rose-50 border border-rose-100 rounded-3xl p-6 shadow-sm md:col-span-2 flex items-start gap-4">
           <AlertCircle className="text-rose-500 shrink-0 mt-1" size={24} />
           <div>

@@ -5,8 +5,8 @@ import { TournamentStage, type Team } from '../types/tournament';
 import {Trophy, Astroid, Star, PartyPopper} from 'lucide-react'
 
 export const ChampionCelebration: React.FC = () => {
-  // Estado apenas para registrar qual campeão o usuário já "fechou" a tela, 
-  // para não ficar abrindo toda hora que ele navegar pelo app.
+  
+  
   const [closedForChampId, setClosedForChampId] = useState<number | null>(null);
   const [imgError, setImgError] = useState(false);
 
@@ -42,8 +42,7 @@ export const ChampionCelebration: React.FC = () => {
     return generateConfetti();
   }, []);
 
-  // 🧠 1. CÁLCULO DIRETO (Sem useEffect):
-  // O React calcula isso em tempo real toda vez que o banco de dados atualiza.
+  
   let champ: Team | null = null;
 
   if (finalMatch && homeTeam && awayTeam) {
@@ -62,8 +61,7 @@ export const ChampionCelebration: React.FC = () => {
     }
   }
 
-  // 🧠 2. DERIVANDO A VISIBILIDADE:
-  // Só mostra se houver um campeão E o usuário ainda não tiver fechado a tela para este campeão.
+  
   const isVisible = champ !== null && closedForChampId !== champ.id;
 
   if (!isVisible || !champ) return null;
@@ -72,18 +70,16 @@ export const ChampionCelebration: React.FC = () => {
 
   console.log("URL img - Campeão Atual:",imageName);
   
-  // Montamos o novo caminho apontando para a sua pasta de imagens 256x256
+  
   const highResLogoUrl = `/plus-size/${imageName}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-slate-900/90 backdrop-blur-md animate-in fade-in duration-1000">
       
-      {/* Efeito de Raios de Luz Dourados no fundo */}
       <div className="absolute inset-0 flex items-center justify-center opacity-30 animate-spin-slow">
         <div className="w-[200vw] h-[200vw] bg-[conic-gradient(from_0deg,transparent_0deg,#eab308_20deg,transparent_40deg,#eab308_60deg,transparent_80deg,#eab308_100deg,transparent_120deg,#eab308_140deg,transparent_160deg,#eab308_180deg,transparent_200deg,#eab308_220deg,transparent_240deg,#eab308_260deg,transparent_280deg,#eab308_300deg,transparent_320deg,#eab308_340deg,transparent_360deg)]"></div>
       </div>
 
-      {/* Partículas caindo simulando Confetes */}
       <div className="pt-40 absolute inset-0 pointer-events-none flex justify-around overflow-hidden">
         {confettiArray.map((confetti) => (
           <div 
@@ -100,7 +96,6 @@ export const ChampionCelebration: React.FC = () => {
         ))}
       </div>
 
-      {/* Cartão Central do Campeão */}
       <div className="relative z-10 flex flex-col items-center transform transition-all duration-1000 scale-100 hover:scale-105">
         <span className="text-8xl drop-shadow-[0_0_30px_rgba(234,179,8,0.8)] mb-4">🏆</span>
         
@@ -122,7 +117,7 @@ export const ChampionCelebration: React.FC = () => {
         </h1>
 
         <button 
-          // Quando clica em fechar, salvamos o ID do campeão para não mostrar a tela de novo à toa
+          
           onClick={() => setClosedForChampId(champ!.id)}
           className="mt-12 px-8 py-3 bg-amber-500 text-slate-900 font-bold uppercase tracking-widest rounded-full hover:bg-amber-400 transition-colors shadow-[0_0_20px_rgba(234,179,8,0.4)]"
         >

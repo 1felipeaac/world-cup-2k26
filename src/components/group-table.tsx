@@ -53,7 +53,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
-      {/* --- CABEÇALHO --- */}
+      
       <div className="bg-slate-50 px-4 py-3 border-b border-slate-200 flex justify-between items-center">
         <h3 className="font-bold text-slate-800">{groupName}</h3>
         <div className="flex items-center gap-4">
@@ -88,7 +88,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
         </div>
       </div>
 
-      {/* --- TABELA DE CLASSIFICAÇÃO --- */}
+      
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-slate-600">
           <thead className="text-[10px] text-slate-400 uppercase bg-slate-50/50">
@@ -106,7 +106,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                 key={team.id}
                 className="hover:bg-blue-50/30 transition-colors"
               >
-                {/* POSIÇÃO */}
+                
                 <td className="px-4 py-3 font-bold">
                   <span
                     className={
@@ -129,12 +129,12 @@ export const GroupTable: React.FC<GroupTableProps> = ({
                   {team.stats.points}
                 </td>
 
-                {/* SALDO DE GOLS */}
+                
                 <td className="px-2 py-3 text-center font-medium">
                   {team.stats.goalDifference}
                 </td>
 
-                {/* FORM (RESULTADOS) */}
+                
                 <td className="px-4 py-3">
                   <TeamForm form={team.stats.recentForm || []} />
                 </td>
@@ -168,7 +168,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
             ))}
           </div>
 
-          {/* Lista de Jogos da Rodada Selecionada */}
+          
           <div className="flex flex-col gap-2">
             {matches.length > 0 ? (
               matches.map((match) => <MatchRow key={match.id} match={match} />)

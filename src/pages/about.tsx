@@ -3,9 +3,9 @@ import { GitBranch, Link2, Mail, Code2, Database, Monitor, Flame, Terminal, Arro
 import Container from '../components/container';
 
 export const About: React.FC = () => {
-  // Ajuste com os seus dados reais de contato
+  
   const contacts = {
-    github: "https://github.com/1felipeaac", // Atualizado com o padrão do seu usuário
+    github: "https://github.com/1felipeaac", 
     linkedin: "https://linkedin.com/in/1felipeaac",
     email: "felipeaacoelho@gmail.com" 
   };
@@ -13,7 +13,7 @@ export const About: React.FC = () => {
   return (
     <Container className="pb-16 animate-in fade-in duration-500">
       
-      {/* Cabeçalho */}
+      
       <header className="mb-10 text-center md:text-left">
         <h1 className="text-3xl md:text-4xl font-black text-slate-800 uppercase tracking-tighter italic">
           Sobre o <span className="text-blue-600">Projeto</span>
@@ -25,10 +25,10 @@ export const About: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         
-        {/* COLUNA 1 & 2: O Projeto e a Engenharia (Ocupa mais espaço) */}
+        
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Card da História */}
+          
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 leading-relaxed text-slate-600 text-sm">
             <h2 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
               <Flame size={20} className="text-amber-500" />
@@ -42,7 +42,7 @@ export const About: React.FC = () => {
             </p>
           </div>
 
-          {/* Card da Stack e Decisões Técnicas */}
+          
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
             <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
               <Code2 size={20} className="text-blue-600" />
@@ -51,7 +51,7 @@ export const About: React.FC = () => {
             
             <div className="space-y-4">
               
-              {/* Item Dexie */}
+              
               <div className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-2xl transition-colors">
                 <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl shrink-0">
                   <Database size={20} />
@@ -64,7 +64,7 @@ export const About: React.FC = () => {
                 </div>
               </div>
 
-              {/* Item React + TS */}
+              
               <div className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-2xl transition-colors">
                 <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
                   <Terminal size={20} />
@@ -77,7 +77,7 @@ export const About: React.FC = () => {
                 </div>
               </div>
 
-              {/* Item Tailwind */}
+              
               <div className="flex gap-4 items-start p-3 hover:bg-slate-50 rounded-2xl transition-colors">
                 <div className="p-2.5 bg-sky-50 text-sky-600 rounded-xl shrink-0">
                   <Monitor size={20} />
@@ -94,11 +94,11 @@ export const About: React.FC = () => {
           </div>
         </div>
 
-        {/* COLUNA 3: O Desenvolvedor & Contatos (Perfil) */}
+        
         <div className="lg:col-span-1 sticky top-8">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl text-center">
             
-            {/* Avatar improvisado com as suas iniciais */}
+            
             <div className="w-20 h-20 bg-linear-to-tr from-blue-600 to-indigo-600 text-white font-black text-2xl rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/10 uppercase">
               FA
             </div>
@@ -112,13 +112,13 @@ export const About: React.FC = () => {
               Desenvolvedor com foco em construir ecossistemas robustos. Experiência que transita entre backend escalável (Java/Spring Boot/Node.js) e interfaces modernas e performáticas com React.
             </p>
 
-            {/* Divisor */}
+            
             <div className="border-t border-slate-800 my-6"></div>
 
-            {/* CTAs de Contato */}
+            
             <div className="space-y-3">
               
-              {/* LinkedIn */}
+              
               <a 
                 href={contacts.linkedin} 
                 target="_blank" 
@@ -132,7 +132,7 @@ export const About: React.FC = () => {
                 <ArrowUpRight size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
               </a>
 
-              {/* GitHub */}
+              
               <a 
                 href={contacts.github} 
                 target="_blank" 
@@ -146,7 +146,7 @@ export const About: React.FC = () => {
                 <ArrowUpRight size={14} className="opacity-40 group-hover:opacity-100 transition-opacity" />
               </a>
 
-              {/* E-mail */}
+              
               <a 
                 href={`mailto:${contacts.email}`}
                 className="flex items-center justify-between p-3 bg-slate-800/60 hover:bg-amber-600 hover:text-white text-slate-300 rounded-xl font-bold text-sm transition-all group"

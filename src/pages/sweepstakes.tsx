@@ -17,17 +17,17 @@ export function Sweepstakes() {
 
   const [participantToDelete, setParticipantToDelete] = useState<{ id: number; name: string } | null>(null);
 
-  // O Dexie ordena automaticamente os utilizadores pela pontuação (do maior para o menor)
+  
   const participants = useLiveQuery(() =>
     db.sweepstakesUsers.orderBy("totalPoints").reverse().toArray(),
   );
 
   const handleAddParticipant = async (e: React.FormEvent) => {
-    e.preventDefault(); // Evita o recarregamento da página pelo formulário
+    e.preventDefault(); 
 
     try {
       await SweepstakesService.addParticipant(newUserName);
-      setNewUserName(""); // Limpa o input após o sucesso
+      setNewUserName(""); 
     } catch (error) {
       console.error(error);
       alert("Erro ao adicionar participante.");
@@ -39,7 +39,7 @@ export function Sweepstakes() {
     userName: string,
     e: React.MouseEvent,
   ) => {
-    e.stopPropagation(); // 🛡️ Impede que o clique "vaze" para a <li> e abra o painel
+    e.stopPropagation(); 
     setParticipantToDelete({ id: userId, name: userName });
   };
 
@@ -49,21 +49,21 @@ export function Sweepstakes() {
     try {
       await SweepstakesService.removeParticipant(participantToDelete.id);
 
-      // Se o utilizador que acabámos de apagar estiver com o painel aberto, fechamo-lo!
+      
       if (selectedUser?.id === participantToDelete.id) {
         setSelectedUser(null);
       }
     } catch (error) {
       console.error("Erro ao remover participante:", error);
     } finally {
-      // Limpa o estado depois que terminar
+      
       setParticipantToDelete(null); 
     }
   };
 
   return (
     <Container className="md:max-w-5xl">
-      {/* Aumentei a largura máxima para dar espaço ao Master-Detail */}
+      
       <header className="mb-8">
         <h1 className="text-3xl font-black text-slate-800 uppercase tracking-tighter italic">
           Modo <span className="text-blue-600">Bolão</span>
@@ -72,9 +72,9 @@ export function Sweepstakes() {
           Gira os participantes e acompanhe o ranking de palpites.
         </p>
       </header>
-      {/* A Mágica do Grid Dinâmico começa aqui */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        {/* COLUNA 1: Formulário (Só aparece se NÃO houver utilizador selecionado) */}
+        
         {!selectedUser && (
           <div className="lg:col-span-1 sticky top-8">
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
@@ -109,10 +109,7 @@ export function Sweepstakes() {
           </div>
         )}
 
-        {/* COLUNA 2: O Ranking (Master) 
-            Se hover utilizador selecionado, ele encolhe para 1 coluna (lg:col-span-1).
-            Se não, ele expande para 2 colunas (lg:col-span-2).
-        */}
+  
         <div
           className={`transition-all duration-500 ${selectedUser ? "lg:col-span-1" : "lg:col-span-2"}`}
         >
@@ -154,7 +151,7 @@ export function Sweepstakes() {
                       </span>
                     </div>
 
-                    {/* NOVO BOTÃO DE EXCLUIR */}
+                    
                     <button
                       onClick={(e) => handleRemoveClick(user.id!, user.name, e)
                       }
@@ -170,13 +167,11 @@ export function Sweepstakes() {
           </div>
         </div>
 
-        {/* COLUNA 3: O Painel de Palpites (Detail) 
-            Só aparece se houver alguém selecionado, ocupando 2 colunas!
-        */}
+  
         {selectedUser && (
           <div className="lg:col-span-2 h-200">
             {" "}
-            {/* Altura fixa para scroll interno confortável */}
+            
             <UserBetsPanel
               user={selectedUser}
               onClose={() => setSelectedUser(null)}

@@ -70,7 +70,7 @@ export const UserBetsPanel: React.FC<UserBetsPanelProps> = ({
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col md:min-w-xl">
-      {/* Cabeçalho do Participante */}
+      
       <div className="bg-slate-900 p-6 flex justify-between items-center text-white shrink-0">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center font-black text-xl">
@@ -91,7 +91,7 @@ export const UserBetsPanel: React.FC<UserBetsPanelProps> = ({
         </button>
       </div>
 
-      {/* Barra de Abas Dinâmica (com Scroll Horizontal para Mobile) */}
+      
       <div className="flex overflow-x-auto bg-slate-50 border-b border-slate-200 p-2 gap-2 shrink-0 hide-scrollbar">
         {Object.entries(matchesByTab).map(([tabId, matches]) => {
           // Condição de ouro: Se for mata-mata e ainda não foi gerado, não mostra a aba.
@@ -124,7 +124,7 @@ export const UserBetsPanel: React.FC<UserBetsPanelProps> = ({
         })}
       </div>
 
-      {/* Grid de Palpites Filtrado (Scroll independente apenas aqui dentro) */}
+      
       <div className="p-6 overflow-y-auto flex-1 bg-slate-50">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {matchesByTab[activeTab]?.map((match) => (

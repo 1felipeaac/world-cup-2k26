@@ -14,7 +14,6 @@ export const TeamDisplay: React.FC<TeamDisplayProps> = ({
   team,
   isVertical = false,
   imageClassName = "w-8 h-8",
-  // 🚀 ATUALIZADO: Padronizamos com whitespace-normal (permite quebra) e break-words (evita estourar o layout)
   textClassName = "text-xs font-bold text-slate-700 whitespace-normal break-words",
   className = "",
   showOnlyAbbreviation = false
@@ -51,15 +50,15 @@ export const TeamDisplay: React.FC<TeamDisplayProps> = ({
         />
       </div>
       
-      {/* Adicionado w-full para o container do texto entender os limites do flexbox */}
+     
       <div className={`flex flex-col justify-center min-w-0 w-full ${isVertical ? 'items-center' : ''}`}>
         {showOnlyAbbreviation ? (
-          /* 🚀 CORREÇÃO: Ignoramos as classes de quebra de linha e forçamos a sigla a ficar numa linha só (whitespace-nowrap) */
+          
           <span className="text-xs font-black text-slate-700 whitespace-nowrap uppercase tracking-widest" title={team.name}>
             {team.abbreviation}
           </span>
         ) : (
-          /* MODO PADRÃO: Comportamento responsivo/quebra de linha das tabelas */
+          
           <>
             <span className={`${textClassName} hidden sm:block`} title={team.name}>
               {team.name}

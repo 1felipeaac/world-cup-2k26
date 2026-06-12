@@ -6,16 +6,16 @@ import { db } from '../db/database';
 import { TeamDisplay } from '../components/ui/team-display';
 
 export const Stats: React.FC = () => {
-  // Puxa todos os times e já ordena pelos critérios oficiais da FIFA
+
   const rankedTeams = useLiveQuery(async () => {
     const teams = await db.teams.toArray();
     
     return teams.sort((a, b) => {
-      // 1. Mais Pontos
+    
       if (b.stats.points !== a.stats.points) return b.stats.points - a.stats.points;
-      // 2. Melhor Saldo de Gols
+    
       if (b.stats.goalDifference !== a.stats.goalDifference) return b.stats.goalDifference - a.stats.goalDifference;
-      // 3. Mais Gols Pró (Marcados)
+    
       return b.stats.goalsFor - a.stats.goalsFor;
     });
   });
@@ -35,11 +35,10 @@ export const Stats: React.FC = () => {
         </p>
       </header>
 
-      {/* ===== CARDS DE DESTAQUE ===== */}
       {rankedTeams.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           
-          {/* Card 1: Líder Geral (TrendingUp) */}
+  
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-amber-100 text-amber-600 rounded-xl shrink-0">
               <TrendingUp size={24} />
@@ -53,7 +52,7 @@ export const Stats: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 2: Melhor Ataque (Swords) */}
+  
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl shrink-0">
               <Swords size={24} />
@@ -72,7 +71,7 @@ export const Stats: React.FC = () => {
             </div>
           </div>
 
-          {/* Card 3: Melhor Defesa (ShieldAlert) */}
+  
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex items-center gap-4">
             <div className="p-3 bg-blue-100 text-blue-600 rounded-xl shrink-0">
               <ShieldAlert size={24} />
@@ -80,12 +79,12 @@ export const Stats: React.FC = () => {
             <div>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Melhor Defesa</p>
               {(() => {
-                // Filtra para pegar apenas times que já jogaram pelo menos 1 partida, 
-                // para não dar prêmio de melhor defesa pra quem tem 0 jogos.
+              
+              
                 const teamsWithGames = rankedTeams.filter(t => (t.stats.wins + t.stats.draws + t.stats.losses) > 0);
                 const bestDefense = teamsWithGames.length > 0 
                   ? teamsWithGames.sort((a, b) => a.stats.goalsAgainst - b.stats.goalsAgainst)[0]
-                  : rankedTeams[0]; // Fallback se ninguém jogou
+                  : rankedTeams[0];
 
                 return (
                   <div className="flex items-center gap-2">
@@ -99,20 +98,18 @@ export const Stats: React.FC = () => {
 
         </div>
       )}
-      {/* =============================== */}
 
 
-      {/* A TABELA DE CLASSIFICAÇÃO GERAL */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
         
         <div className="overflow-auto max-h-[65vh] md:max-h-[70vh] custom-scrollbar md:w-full relative">
           
-          {/* 🚀 whitespace-nowrap impede que as colunas se espremam, forçando o scroll horizontal */}
+  
           <table className="md:w-full text-sm text-left border-collapse whitespace-nowrap">
             
             <thead className="sticky top-0 z-20 bg-slate-100 text-slate-500 font-bold uppercase tracking-wider text-xs shadow-sm">
               <tr>
-                {/* 🚀 COLUNA CONGELADA (Cabeçalho): sticky left-0 e z-30 (acima do top-0) */}
+        
                 <th className="sticky left-0 z-30 bg-slate-100 px-6 py-4 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                   Classificação
                 </th>
@@ -136,11 +133,11 @@ export const Stats: React.FC = () => {
                 else if (index === 1) rankClass = "text-slate-400 font-black text-lg";
                 else if (index === 2) rankClass = "text-amber-700 font-black text-lg";
 
-                // 🚀 Usamos 'group' na linha para não quebrar o efeito de hover na coluna fixada
+              
                 return (
                   <tr key={team.id} className="group hover:bg-slate-50 transition-colors">
                     
-                    {/* 🚀 COLUNA CONGELADA (Corpo): bg-white para cobrir os dados passando por baixo */}
+            
                     <td className="sticky left-0 z-10 bg-white group-hover:bg-slate-50 px-6 py-3 min-w-[180px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] transition-colors">
                       <div className="flex items-center gap-3">
                         <span className={`w-6 text-right shrink-0 ${rankClass}`}>

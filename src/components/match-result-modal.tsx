@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db/database';
@@ -22,13 +23,13 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
     [match?.awayTeamId]
   );
 
-  // Estados locais para os inputs
+  
   const [homeGoals, setHomeGoals] = useState<string>('');
   const [awayGoals, setAwayGoals] = useState<string>('');
   const [homePen, setHomePen] = useState<string>('');
   const [awayPen, setAwayPen] = useState<string>('');
 
-  // Preenche os inputs se o jogo já tiver resultado no banco de dados
+  
   useEffect(() => {
     if (match) {
       setHomeGoals(match.homeTeamGoals !== null ? String(match.homeTeamGoals) : '');
@@ -38,13 +39,13 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
     }
   }, [match]);
 
-  // A inteligência reativa: É empate?
+  
   const isDraw = homeGoals !== '' && awayGoals !== '' && homeGoals === awayGoals;
 
   const handleSave = async () => {
     if (!match) return;
     
-    // Converte as strings dos inputs para números reais
+    
     const hGoals = parseInt(homeGoals, 10);
     const aGoals = parseInt(awayGoals, 10);
     const hPen = isDraw ? parseInt(homePen, 10) : null;
@@ -52,7 +53,7 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
 
     try {
       await SimulatorService.updateKnockoutMatchScore(match.id, hGoals, aGoals, hPen, aPen);
-      onClose(); // Fecha o modal após gravar com sucesso
+      onClose(); 
     } catch (error) {
       console.error("Erro ao salvar resultado:", error);
     }
@@ -64,7 +65,7 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all animate-fade-in-up">
         
-        {/* Cabeçalho */}
+        
         <div className="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
           <h3 className="font-black text-slate-800 uppercase tracking-tight">Resultado Oficial</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-rose-500 transition-colors p-1">
@@ -72,16 +73,16 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
           </button>
         </div>
 
-        {/* Corpo do Modal */}
+        
         <div className="p-8">
           <div className="flex justify-between items-center gap-4">
-            {/* Equipa da Casa */}
+            
             <div className="flex flex-col items-center flex-1">
               <img src={homeTeam.logoUrl} alt={homeTeam.name} className="w-16 h-16 object-contain drop-shadow-md mb-3" />
               <span className="font-bold text-slate-700 text-center text-sm">{homeTeam.name}</span>
             </div>
 
-            {/* Placar (Tempo Regulamentar) */}
+            
             <div className="flex items-center gap-3">
               <input
                 type="number"
@@ -100,14 +101,14 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
               />
             </div>
 
-            {/* Equipa Visitante */}
+            
             <div className="flex flex-col items-center flex-1">
               <img src={awayTeam.logoUrl} alt={awayTeam.name} className="w-16 h-16 object-contain drop-shadow-md mb-3" />
               <span className="font-bold text-slate-700 text-center text-sm">{awayTeam.name}</span>
             </div>
           </div>
 
-          {/* Área Dinâmica de Penáltis */}
+          
           {isDraw && (
             <div className="mt-8 pt-6 border-t border-dashed border-slate-200 animate-fade-in-up">
               <h4 className="text-center text-xs font-black text-amber-500 uppercase tracking-widest mb-4">
@@ -136,7 +137,7 @@ export const MatchResultModal: React.FC<MatchResultModalProps> = ({ matchId, onC
           )}
         </div>
 
-        {/* Rodapé e Botão Salvar */}
+        
         <div className="p-4 bg-slate-50 border-t border-slate-100">
           <button
             onClick={handleSave}
