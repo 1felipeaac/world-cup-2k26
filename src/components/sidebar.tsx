@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { SimulatorService } from '../services/simulator-service';
-import { Home, Trophy, Target, Settings, RotateCcw, UserCircle, HelpCircle, BarChart3, Calendar } from 'lucide-react';
-import { ConfirmModal } from './confirm-modal';
+import { Home, Trophy, Target, Settings, UserCircle, HelpCircle, BarChart3, Calendar } from 'lucide-react';
+
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -13,28 +12,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
   
 
-  const [showResetModal, setShowResetModal] = useState(false);
-
-  const executeReset = async () => {
-    try {
-      await SimulatorService.resetTournament();
-      
-      
-      window.location.reload(); 
-    } catch (error) {
-      console.error("Erro ao resetar o torneio:", error);
-    }
-  };
 
 
   const navItems = [
     { name: 'Simulador Oficial', path: '/', icon: <Home size={20} /> },
     { name: 'Fase Final', path: '/mata-mata', icon: <Trophy size={20} /> }, 
+    { name: 'Calendário', path: '/calendario', icon: <Calendar size={20} /> },
     { name: 'Modo Bolão', path: '/bolao', icon: <Target size={20} /> },
     { name: 'Como Jogar', path: '/regras', icon: <HelpCircle size={20} /> },
     { name: 'Desenvolvedor', path: '/sobre', icon: <UserCircle size={20} /> },
     { name: 'Estatísticas', path: '/estatisticas', icon: <BarChart3 size={20} /> },
-    { name: 'Calendário', path: '/calendario', icon: <Calendar size={20} /> },
   ];
 
   return (
@@ -83,29 +70,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         })}
       </nav>
 
-      
-      <button
-        onClick={() => setShowResetModal(true)}
-        className="
-          flex items-center justify-center
-          h-12 w-12 md:w-full rounded-xl
-          text-rose-400 hover:bg-rose-500 hover:text-white
-          transition-all md:gap-2
-        "
-      >
-        <span className='hidden md:block'>Reset</span>
-        <RotateCcw size={20}/>
-      </button>
     </aside>
-    <ConfirmModal
-        isOpen={showResetModal}
-        onClose={() => setShowResetModal(false)}
-        onConfirm={executeReset}
-        title="Zerar Simulador"
-        message="Atenção: Isto apagará TODOS os resultados e placares oficiais do simulador. O histórico do Bolão não será afetado. Deseja continuar?"
-        confirmText="Sim, zerar tudo"
-        variant="danger"
-      />
+    
     </>
   );
 };
