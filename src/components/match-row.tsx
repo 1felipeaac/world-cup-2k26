@@ -72,10 +72,12 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
   const formattedDate = matchDate.toLocaleDateString("pt-PT", {
     day: "2-digit",
     month: "2-digit",
+    timeZone: 'UTC'
   });
   const formattedTime = matchDate.toLocaleTimeString("pt-PT", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: 'UTC'
   });
 
   return (
