@@ -4,9 +4,11 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { TeamDisplay } from '../components/ui/team-display';
 import { db } from '../db/database';
+import { MatchScheduleModal } from '../components/match-schedule-modal';
 
 export const Schedule: React.FC = () => {
   const [filterOnlyPlayed, setFilterOnlyPlayed] = useState<boolean>(false);
+  const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
 
   
   const scheduleData = useLiveQuery(async () => {
@@ -17,33 +19,30 @@ export const Schedule: React.FC = () => {
     const teamsMap = new Map(teams.map((t) => [t.id, t]));
     const groupsMap = new Map(groups.map((g) => [g.id, g.name]));
 
-    
     const sortedMatches = matches.sort((a, b) => {
       if (a.date && b.date) return new Date(a.date).getTime() - new Date(b.date).getTime();
       return a.id - b.id;
     });
 
-    
     const groupsByDate: { [key: string]: any[] } = {};
 
     sortedMatches.forEach((match) => {
-     
+      
       if (filterOnlyPlayed && (match.homeTeamGoals === null || match.awayTeamGoals === null)) {
         return;
       }
 
-      
       let dateLabel = "Datas a Definir";
       let timeLabel = "--:--";
       if (match.date) {
         const d = new Date(match.date);
-        dateLabel = d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
-        timeLabel = d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+        dateLabel = d.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long' });
+        timeLabel = d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
       }
 
       const homeTeam = teamsMap.get(match.homeTeamId);
       const awayTeam = teamsMap.get(match.awayTeamId);
-      const groupName = match.groupId ? `${groupsMap.get(match.groupId)}` : match.stage;
+      const groupName = match.groupId ? `Grupo ${groupsMap.get(match.groupId)}` : match.stage;
 
       if (!groupsByDate[dateLabel]) {
         groupsByDate[dateLabel] = [];
@@ -62,7 +61,6 @@ export const Schedule: React.FC = () => {
   }, [filterOnlyPlayed]);
 
   if (!scheduleData) return <div className="p-8 text-center text-slate-500">A carregar calendário...</div>;
-
   return (
     <div className="max-w-4xl mx-auto pb-16 animate-in fade-in duration-500">
       
@@ -128,6 +126,7 @@ export const Schedule: React.FC = () => {
                 return (
                   <div
                     key={match.id}
+                    onClick={() => setSelectedMatchId(match.id)}
                     className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-300 transition-all rounded-2xl p-4 flex items-center justify-between gap-4 cursor-pointer group shadow-xs"
                   >
                     
@@ -185,7 +184,12 @@ export const Schedule: React.FC = () => {
         ))}
       </div>
 
-     
+     {selectedMatchId && (
+        <MatchScheduleModal
+          matchId={selectedMatchId}
+          onClose={() => setSelectedMatchId(null)}
+        />
+      )}
     </div>
   );
 };
