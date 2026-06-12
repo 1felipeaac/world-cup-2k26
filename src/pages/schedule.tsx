@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
-import { MatchResultModal } from '../components/match-result-modal';
 import { TeamDisplay } from '../components/ui/team-display';
 import { db } from '../db/database';
 
 export const Schedule: React.FC = () => {
-  const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
   const [filterOnlyPlayed, setFilterOnlyPlayed] = useState<boolean>(false);
 
   
@@ -130,7 +128,6 @@ export const Schedule: React.FC = () => {
                 return (
                   <div
                     key={match.id}
-                    onClick={() => setSelectedMatchId(match.id)}
                     className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-blue-300 transition-all rounded-2xl p-4 flex items-center justify-between gap-4 cursor-pointer group shadow-xs"
                   >
                     
@@ -161,8 +158,8 @@ export const Schedule: React.FC = () => {
                             <span>{match.awayTeamGoals}</span>
                           </>
                         ) : (
-                          <span className="text-slate-400 font-medium px-2 text-xs group-hover:text-blue-600 transition-colors">
-                            Palpitar
+                          <span className="text-slate-300 font-medium px-2 text-xs group-hover:text-blue-600 transition-colors">
+                            x
                           </span>
                         )}
                       </div>
@@ -188,13 +185,7 @@ export const Schedule: React.FC = () => {
         ))}
       </div>
 
-      {/* Reutilizando seu modal oficial para preenchimento de resultados */}
-      {selectedMatchId && (
-        <MatchResultModal
-          matchId={selectedMatchId}
-          onClose={() => setSelectedMatchId(null)}
-        />
-      )}
+     
     </div>
   );
 };

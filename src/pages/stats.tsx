@@ -138,7 +138,7 @@ export const Stats: React.FC = () => {
                   <tr key={team.id} className="group hover:bg-slate-50 transition-colors">
                     
             
-                    <td className="sticky left-0 z-10 bg-white group-hover:bg-slate-50 px-6 py-3 min-w-[180px] shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] transition-colors">
+                    <td className="sticky left-0 z-10 bg-white group-hover:bg-slate-50 px-6 py-3 min-w-45 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] transition-colors">
                       <div className="flex items-center gap-3">
                         <span className={`w-6 text-right shrink-0 ${rankClass}`}>
                           {index + 1}º

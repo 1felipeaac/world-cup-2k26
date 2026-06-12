@@ -187,7 +187,7 @@ export const GroupTable: React.FC<GroupTableProps> = ({
     title="Zerar Grupo"
     message={`Tem certeza que deseja apagar todos os resultados do Grupo ${groupName}? Os times voltarão a ter zero pontos.`}
     confirmText="Zerar Grupo"
-    variant="warning" // Podemos usar warning (laranja) por ser menos destrutivo que o geral
+    variant="warning"
   />
     </div>
   );

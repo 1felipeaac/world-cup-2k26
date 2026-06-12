@@ -80,14 +80,12 @@ export const MatchRow: React.FC<MatchRowProps> = ({ match }) => {
 
   return (
     <div className="bg-white rounded-lg border border-slate-100 p-3 shadow-sm hover:shadow-md transition-shadow">
-      S
       <div className="flex justify-center mb-3">
         <span className="text-[10px] font-bold tracking-widest text-slate-400 uppercase bg-slate-100 px-3 py-1 rounded-full">
           {formattedDate} • {formattedTime}
         </span>
       </div>
 
-      S
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center">
 
         <div className="flex justify-end">
